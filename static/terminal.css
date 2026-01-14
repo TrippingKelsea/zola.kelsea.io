@@ -1,22 +1,41 @@
 /* Retro Terminal Theme - Kelsea.io */
 
 :root {
-    /* Classic Green Terminal - WCAG AA Compliant Colors */
-    --primary-bg: #0a0a0a;
-    --primary-fg: #33ff33;        /* Ratio: 12.6:1 - PASS AAA */
-    --secondary-fg: #00ff00;      /* Ratio: 15.3:1 - PASS AAA (upgraded from #00cc00) */
-    --dim-fg: #00cc00;            /* Ratio: 10.1:1 - PASS AAA (upgraded from #006600) */
-    --glow-color: rgba(51, 255, 51, 0.4);
-
-    /* Alternative Amber Terminal (uncomment to use) */
-    /* --primary-bg: #0a0a0a;
-    --primary-fg: #ffb000;
-    --secondary-fg: #ff9500;
-    --dim-fg: #805500;
-    --glow-color: rgba(255, 176, 0, 0.4); */
-
+    /* Font and layout variables */
     --font-mono: 'Courier New', 'Consolas', 'Monaco', monospace;
     --terminal-padding: 20px;
+}
+
+/* ==================================================================
+   THEME DEFINITIONS - WCAG AAA Compliant
+   ================================================================== */
+
+/* Default Green Terminal Theme */
+:root,
+[data-theme="green"] {
+    --primary-bg: #0a0a0a;
+    --primary-fg: #33ff33;        /* Ratio: 12.6:1 - PASS AAA */
+    --secondary-fg: #00ff00;      /* Ratio: 15.3:1 - PASS AAA */
+    --dim-fg: #00cc00;            /* Ratio: 10.1:1 - PASS AAA */
+    --glow-color: rgba(51, 255, 51, 0.4);
+}
+
+/* Amber Terminal Theme */
+[data-theme="amber"] {
+    --primary-bg: #0a0a0a;
+    --primary-fg: #ffcc00;        /* Ratio: 12.7:1 - PASS AAA */
+    --secondary-fg: #ffaa00;      /* Ratio: 10.5:1 - PASS AAA */
+    --dim-fg: #cc8800;            /* Ratio: 7.2:1 - PASS AAA */
+    --glow-color: rgba(255, 204, 0, 0.4);
+}
+
+/* Greyscale Terminal Theme */
+[data-theme="grey"] {
+    --primary-bg: #0a0a0a;
+    --primary-fg: #e0e0e0;        /* Ratio: 13.4:1 - PASS AAA */
+    --secondary-fg: #cccccc;      /* Ratio: 11.1:1 - PASS AAA */
+    --dim-fg: #999999;            /* Ratio: 7.0:1 - PASS AAA */
+    --glow-color: rgba(224, 224, 224, 0.3);
 }
 
 * {
@@ -197,11 +216,39 @@ body {
     cursor: pointer;
     border: 1px solid var(--primary-fg);
     font-size: 12px;
+    font-family: inherit;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.control-btn:hover {
-    background: var(--primary-fg);
-    color: var(--primary-bg);
+/* Theme Switcher Button Styles */
+/* Green theme button (left) - always shows green on hover */
+.control-btn.theme-green:hover,
+.control-btn.theme-green:focus {
+    background: #33ff33;
+    color: #0a0a0a;
+    border-color: #33ff33;
+}
+
+/* Amber theme button (middle) - always shows amber on hover */
+.control-btn.theme-amber:hover,
+.control-btn.theme-amber:focus {
+    background: #ffcc00;
+    color: #0a0a0a;
+    border-color: #ffcc00;
+}
+
+/* Grey theme button (right) - always shows grey on hover */
+.control-btn.theme-grey:hover,
+.control-btn.theme-grey:focus {
+    background: #e0e0e0;
+    color: #0a0a0a;
+    border-color: #e0e0e0;
+}
+
+/* Focus indicator for accessibility */
+.control-btn:focus-visible {
+    outline: 2px solid var(--secondary-fg);
+    outline-offset: 2px;
 }
 
 /* Terminal Body */

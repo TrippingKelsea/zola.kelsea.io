@@ -21,11 +21,11 @@
     <div class="terminal-container">
         <header class="terminal-header" role="banner">
             <span class="terminal-title" aria-label="Kelsea.io Personal Terminal">KELSEA.IO - PERSONAL TERMINAL v1.0</span>
-            <span class="terminal-controls" aria-hidden="true">
-                <span class="control-btn minimize" aria-label="Minimize window" role="img">_</span>
-                <span class="control-btn maximize" aria-label="Maximize window" role="img">□</span>
-                <span class="control-btn close" aria-label="Close window" role="img">×</span>
-            </span>
+            <div class="terminal-controls" role="group" aria-label="Theme selection">
+                <button type="button" class="control-btn theme-green" data-theme="green" aria-label="Switch to green terminal theme" title="Green theme">_</button>
+                <button type="button" class="control-btn theme-amber" data-theme="amber" aria-label="Switch to amber terminal theme" title="Amber theme">□</button>
+                <button type="button" class="control-btn theme-grey" data-theme="grey" aria-label="Switch to greyscale terminal theme" title="Greyscale theme">×</button>
+            </div>
         </header>
 
         <div class="terminal-body">

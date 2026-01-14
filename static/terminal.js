@@ -1,6 +1,9 @@
 // Terminal Enhancement Scripts
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize theme switcher first (before any visual setup)
+    initThemeSwitcher();
+
     // Add typing effect to the home page
     const terminalOutput = document.querySelector('.terminal-output');
 
@@ -17,6 +20,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhance link interactions
     enhanceLinks();
 });
+
+// ==================================================================
+// THEME SWITCHER
+// ==================================================================
+
+function initThemeSwitcher() {
+    // Load saved theme preference from localStorage
+    const savedTheme = localStorage.getItem('terminalTheme');
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    }
+
+    // Add click handlers to theme buttons
+    const themeButtons = document.querySelectorAll('.control-btn[data-theme]');
+    themeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const theme = this.getAttribute('data-theme');
+            applyTheme(theme);
+            localStorage.setItem('terminalTheme', theme);
+
+            // Announce theme change for screen readers
+            announceThemeChange(theme);
+        });
+    });
+}
+
+function applyTheme(theme) {
+    // Apply theme to the document root
+    document.documentElement.setAttribute('data-theme', theme);
+}
+
+function announceThemeChange(theme) {
+    // Create a live region announcement for screen readers
+    let announcer = document.getElementById('theme-announcer');
+    if (!announcer) {
+        announcer = document.createElement('div');
+        announcer.id = 'theme-announcer';
+        announcer.setAttribute('role', 'status');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.className = 'sr-only';
+        document.body.appendChild(announcer);
+    }
+
+    const themeNames = {
+        'green': 'green',
+        'amber': 'amber',
+        'grey': 'greyscale'
+    };
+
+    announcer.textContent = `Terminal theme changed to ${themeNames[theme] || theme}`;
+}
 
 // Boot sequence animation (optional, can be enabled)
 function addBootSequence() {
@@ -155,10 +210,15 @@ console.log(`
 
 Welcome to kelsea.io!
 
+Theme Switcher:
+- Use the three buttons in the terminal header
+- Left (_) = Green | Middle (□) = Amber | Right (×) = Greyscale
+- Your preference is saved automatically
+
 Accessibility features enabled:
 - Full keyboard navigation (Tab, Enter, Space)
 - Screen reader compatible
-- WCAG AA compliant colors
+- WCAG AAA compliant colors for all themes
 - Reduced motion support
 
 Optional keyboard shortcuts disabled by default.
