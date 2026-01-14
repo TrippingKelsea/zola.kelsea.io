@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}{{ config.title }} - Terminal{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <figure role="img" aria-label="Kelsea dot io ASCII art logo" class="ascii-art-figure">
+        <pre class="ascii-art" aria-hidden="true">
+ _  _______ _     ____  _____    _
+| |/ / ____| |   / ___|| ____|  / \
+| ' /|  _| | |   \___ \|  _|   / _ \
+| . \| |___| |___ ___) | |___ / ___ \
+|_|\_\_____|_____|____/|_____/_/   \_\
+        </pre>
+        <figcaption class="sr-only">Kelsea.io</figcaption>
+    </figure>
+
+    <div class="terminal-section">
+        <h1 class="sr-only">Welcome to Kelsea.io</h1>
+        <span class="prompt-line" aria-hidden="true">$ cat welcome.txt</span>
+        <div class="output-text">
+            {{ section.content | safe }}
+
+            {% if not section.content %}
+            <p>Welcome to my terminal-inspired blog.</p>
+            <p>I write about technology, programming, and other interesting topics.</p>
+            <p>Feel free to explore using the commands above.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% set books_section = get_section(path="books/_index.md", metadata_only=true) %}
+    {% if books_section and books_section.subsections %}
+    <div class="terminal-section">
+        <span class="prompt-line">$ ls -l /books/</span>
+        <div class="output-text">
+            {% for subsection_path in books_section.subsections %}
+                {% set book = get_section(path=subsection_path) %}
+                <div class="file-entry">
+                    <span class="permissions">drwxr-xr-x</span>
+                    <span class="file-size">{{ book.pages | length }}ch</span>
+                    <span class="file-date">{{ book.extra.book_status | default(value="In Progress") }}</span>
+                    <a href="{{ book.permalink }}" class="file-name">{{ book.extra.book_title | default(value=book.title) }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% set blog_section = get_section(path="blog/_index.md") %}
+    {% if blog_section %}
+    <div class="terminal-section">
+        <span class="prompt-line">$ ls -l /recent_posts/</span>
+        <div class="output-text">
+            <p>total {{ blog_section.pages | length }}</p>
+            {% for page in blog_section.pages | slice(end=5) %}
+            <div class="file-entry">
+                <span class="permissions">-rw-r--r--</span>
+                <span class="file-size">{{ page.word_count }}w</span>
+                <span class="file-date">{{ page.date | date(format="%b %d %H:%M") }}</span>
+                <a href="{{ page.permalink }}" class="file-name">{{ page.title }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="terminal-section">
+        <span class="prompt-line">$ whoami</span>
+        <div class="output-text">
+            <p>{{ config.extra.author | default(value="Kelsea") }}</p>
+            {% if config.extra.bio %}
+            <p>{{ config.extra.bio }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ cat /etc/social_links</span>
+        <div class="output-text">
+            <p class="social-description">Connect with me on social media:</p>
+            <div class="home-social-links">
+                {% if config.extra.bluesky %}
+                <a href="{{ config.extra.bluesky }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Bluesky">
+                    <span aria-hidden="true">[</span>Bluesky<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.instagram %}
+                <a href="{{ config.extra.instagram }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram">
+                    <span aria-hidden="true">[</span>Instagram<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.threads %}
+                <a href="{{ config.extra.threads }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Threads">
+                    <span aria-hidden="true">[</span>Threads<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.mastodon %}
+                <a href="{{ config.extra.mastodon }}" class="social-link" target="_blank" rel="noopener noreferrer me" aria-label="Follow on Mastodon">
+                    <span aria-hidden="true">[</span>Mastodon<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.twitter %}
+                <a href="{{ config.extra.twitter }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on Twitter">
+                    <span aria-hidden="true">[</span>Twitter<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.github %}
+                <a href="{{ config.extra.github }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow on GitHub">
+                    <span aria-hidden="true">[</span>GitHub<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.linkedin %}
+                <a href="{{ config.extra.linkedin }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn">
+                    <span aria-hidden="true">[</span>LinkedIn<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+                {% if config.extra.email %}
+                <a href="mailto:{{ config.extra.email }}" class="social-link" aria-label="Send email">
+                    <span aria-hidden="true">[</span>Email<span aria-hidden="true">]</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

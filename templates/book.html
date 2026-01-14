@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% import "macros/subscribe.html" as subscribe %}
+
+{% block title %}{{ section.extra.book_title | default(value=section.title) }} - {{ config.title }}{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <div class="terminal-section book-header">
+        <span class="prompt-line" aria-hidden="true">$ cat /book/README.md</span>
+        <div class="output-text">
+            {# Calculate padding for centered title #}
+            {% set title = section.extra.book_title | default(value="MY BOOK") | upper %}
+            {% set title_len = title | length %}
+            {% set box_width = 58 %}
+            {% set total_padding = box_width - title_len %}
+            {% set left_pad = total_padding / 2 | round(method="floor") %}
+            {% set right_pad = total_padding - left_pad %}
+
+            {# Build padding strings using split filter trick #}
+            {% set space_58 = "                                                          " %}
+            {% set title_left_spaces = space_58 | split(pat="") | slice(start=1, end=left_pad+1) | join(sep="") %}
+            {% set title_right_spaces = space_58 | split(pat="") | slice(start=1, end=right_pad+1) | join(sep="") %}
+
+            {# Calculate subtitle padding if present and non-empty #}
+            {% set has_subtitle = false %}
+            {% if section.extra.book_subtitle and section.extra.book_subtitle | length > 0 %}
+                {% set has_subtitle = true %}
+                {% set subtitle = section.extra.book_subtitle %}
+                {% set subtitle_len = subtitle | length %}
+                {% set subtitle_total_padding = box_width - subtitle_len %}
+                {% set subtitle_left_pad = subtitle_total_padding / 2 | round(method="floor") %}
+                {% set subtitle_right_pad = subtitle_total_padding - subtitle_left_pad %}
+                {% set subtitle_left_spaces = space_58 | split(pat="") | slice(start=1, end=subtitle_left_pad+1) | join(sep="") %}
+                {% set subtitle_right_spaces = space_58 | split(pat="") | slice(start=1, end=subtitle_right_pad+1) | join(sep="") %}
+            {% endif %}
+
+            <h1 class="sr-only">{{ section.extra.book_title | default(value=section.title) }}</h1>
+
+            <figure role="img" aria-label="{{ section.extra.book_title | default(value=section.title) }} book cover">
+                <pre class="book-title-art" aria-hidden="true">
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║{{ title_left_spaces }}{{ title }}{{ title_right_spaces }}║{% if has_subtitle %}
+║{{ subtitle_left_spaces }}{{ subtitle }}{{ subtitle_right_spaces }}║{% endif %}
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
+                </pre>
+            </figure>
+
+            {% if section.extra.book_status %}
+            <p class="book-status">Status: <span class="status-badge">{{ section.extra.book_status }}</span></p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if section.content %}
+    <div class="terminal-section book-intro">
+        <div class="output-text">
+            {{ section.content | safe }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% set all_pages = section.pages %}
+    {% if paginator %}
+        {% set all_pages = paginator.pages %}
+    {% endif %}
+
+    {% if all_pages %}
+    <nav class="terminal-section" aria-label="Book chapters">
+        <h2 class="sr-only">Chapters</h2>
+        <span class="prompt-line" aria-hidden="true">$ ls -l /book/chapters/</span>
+        <div class="output-text">
+            <p>Total {{ all_pages | length }} chapters</p>
+
+            <ol class="book-chapters">
+                {% for page in all_pages %}
+                <li class="chapter-entry">
+                    <div class="chapter-header">
+                        <span class="chapter-number">
+                            {% if page.extra.chapter_number %}
+                            Chapter {{ page.extra.chapter_number }}
+                            {% else %}
+                            Chapter {{ loop.index }}
+                            {% endif %}
+                        </span>
+                        <span class="chapter-meta">
+                            <span class="file-size">{{ page.word_count }} words</span>
+                            <span class="reading-time">{{ page.reading_time }} minute read</span>
+                        </span>
+                    </div>
+
+                    <a href="{{ page.permalink }}" class="chapter-title" aria-label="{% if page.extra.chapter_number %}Chapter {{ page.extra.chapter_number }}: {% endif %}{{ page.title }}">{{ page.title }}</a>
+
+                    {% if page.description %}
+                    <div class="chapter-description">
+                        {{ page.description }}
+                    </div>
+                    {% endif %}
+
+                    {% if page.extra.status %}
+                    <div class="chapter-status">
+                        <span class="status-label">Status:</span>
+                        <span class="status-badge status-{{ page.extra.status | slugify }}">
+                            {{ page.extra.status }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="terminal-section book-footer">
+        <span class="prompt-line" aria-hidden="true">$ book --info</span>
+        <div class="output-text">
+            {% if all_pages %}
+            <p>Total chapters: {{ all_pages | length }}</p>
+            {% endif %}
+
+            {% if config.extra.author %}
+            <p>Author: {{ config.extra.author }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ subscribe::subscribe_section(feed_url=section.path, section_name="chapters") }}
+</div>
+{% endblock %}

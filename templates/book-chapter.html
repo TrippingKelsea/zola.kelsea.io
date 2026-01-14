@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if page.extra.chapter_number %}Chapter {{ page.extra.chapter_number }}: {% endif %}{{ page.title }} - {{ config.title }}
+{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <div class="terminal-section chapter-header">
+        <span class="prompt-line">$ cat chapter_{{ page.extra.chapter_number | default(value="00") }}.md</span>
+
+        <div class="chapter-metadata">
+            <div class="meta-row">
+                {% if page.extra.chapter_number %}
+                <span class="meta-item">
+                    <span class="meta-label">Chapter:</span>
+                    {{ page.extra.chapter_number }}
+                </span>
+                {% endif %}
+
+                <span class="meta-item">
+                    <span class="meta-label">Reading time:</span>
+                    {{ page.reading_time }} min
+                </span>
+
+                <span class="meta-item">
+                    <span class="meta-label">Words:</span>
+                    {{ page.word_count }}
+                </span>
+
+                {% if page.date %}
+                <span class="meta-item">
+                    <span class="meta-label">Updated:</span>
+                    {{ page.date | date(format="%Y-%m-%d") }}
+                </span>
+                {% endif %}
+            </div>
+
+            {% if page.extra.status %}
+            <div class="meta-row">
+                <span class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-badge status-{{ page.extra.status | slugify }}">
+                        {{ page.extra.status }}
+                    </span>
+                </span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <article class="chapter-content">
+        <h1 class="chapter-title">
+            {% if page.extra.chapter_number %}
+            # Chapter {{ page.extra.chapter_number }}: {{ page.title }}
+            {% else %}
+            # {{ page.title }}
+            {% endif %}
+        </h1>
+
+        {% if page.description %}
+        <div class="chapter-intro">
+            <em>{{ page.description }}</em>
+        </div>
+        {% endif %}
+
+        <div class="chapter-body">
+            {{ page.content | safe }}
+        </div>
+    </article>
+
+    {% if page.earlier or page.later %}
+    <div class="terminal-section chapter-navigation">
+        <span class="prompt-line">$ navigate chapters</span>
+        <div class="output-text nav-chapters">
+            {% if page.earlier %}
+            <div class="nav-chapter prev-chapter">
+                <span class="nav-label">← Previous Chapter</span>
+                <a href="{{ page.earlier.permalink }}">
+                    {% if page.earlier.extra.chapter_number %}
+                    Chapter {{ page.earlier.extra.chapter_number }}:
+                    {% endif %}
+                    {{ page.earlier.title }}
+                </a>
+            </div>
+            {% endif %}
+
+            {% if page.later %}
+            <div class="nav-chapter next-chapter">
+                <span class="nav-label">Next Chapter →</span>
+                <a href="{{ page.later.permalink }}">
+                    {% if page.later.extra.chapter_number %}
+                    Chapter {{ page.later.extra.chapter_number }}:
+                    {% endif %}
+                    {{ page.later.title }}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="terminal-section">
+        <span class="prompt-line">$ cd ..</span>
+        <div class="output-text">
+            {% if page.ancestors %}
+                {% set book_section = get_section(path=page.ancestors | last) %}
+                <a href="{{ book_section.permalink }}">← Back to {{ book_section.extra.book_title | default(value=book_section.title) }}</a>
+            {% else %}
+                <a href="{{ get_url(path='/books') }}">← Back to books</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

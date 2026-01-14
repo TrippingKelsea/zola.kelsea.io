@@ -1,0 +1,54 @@
+# The URL the site will be built for
+base_url = "https://www.kelsea.io"
+
+# The site title
+title = "kelsea.io"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = false
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = true
+
+# Generate RSS feed
+generate_feeds = true
+feed_filenames = ["rss.xml", "atom.xml"]
+
+# Taxonomies for organizing content
+taxonomies = [
+    {name = "tags", feed = true},
+]
+
+[markdown]
+# Enable smart punctuation
+smart_punctuation = true
+
+[extra]
+# Terminal theme customization
+terminal_info = "Type 'help' for available commands | Press ESC to return home"
+
+# Author information
+author = "Kelsea"
+bio = "Developer, writer, and terminal enthusiast"
+
+# Notification and subscription options
+# Uncomment and fill in the ones you want to use
+
+# Newsletter signup (e.g., Buttondown, Substack, etc.)
+# newsletter_url = "https://buttondown.email/yourusername"
+
+# Social links for updates
+social_links = true  # Set to true to show social section in subscribe box
+# mastodon = "https://mastodon.social/@yourusername"
+# twitter = "https://twitter.com/yourusername"
+bluesky = "https://bsky.app/profile/trippingkelsea.bsky.social"
+instagram = "https://instagram.com/trippinkelsea"
+threads = "https://threads.net/@trippinkelsea"
+
+# Other social links
+github = "https://github.com/TrippingKelsea"
+linkedin = "https://www.linkedin.com/in/trippingkelsea/"
+# email = "your@email.com"
+
+# Terminal color scheme (green or amber)
+terminal_style = "green"

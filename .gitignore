@@ -1,0 +1,99 @@
+# ====================
+# Build Output
+# ====================
+public/
+
+# ====================
+# Sensitive Configuration
+# ====================
+# Deployment configuration (contains AWS credentials, bucket names, CloudFront IDs)
+.deploy-config
+.deploy-config.local
+*.deploy-config
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# AWS credentials and config
+.aws/
+aws-credentials*
+credentials.json
+
+# API keys and secrets
+*.pem
+*.key
+*.secret
+secrets.yaml
+secrets.json
+secrets.toml
+
+# ====================
+# Editor & IDE
+# ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ====================
+# Claude Working Files
+# ====================
+.claude/
+
+# ====================
+# Node.js (if using any build tools)
+# ====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ====================
+# Python (for publish script)
+# ====================
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+ENV/
+
+# ====================
+# Temporary Files
+# ====================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.log
+
+# ====================
+# OS Generated
+# ====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ====================
+# Zola Specific
+# ====================
+# Zola creates this during build
+.zola-build/
+
+# ====================
+# Search Index (can be rebuilt)
+# ====================
+static/search_index.en.js
+
+# ====================
+# Obsidian (source vault - should not be in this repo)
+# ====================
+.obsidian/

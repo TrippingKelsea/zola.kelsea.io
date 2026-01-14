@@ -1,0 +1,21 @@
+# Obsidian to Zola Publishing Configuration
+# Copy this file to .publish-config and customize for your setup
+#
+# For flat vault structure (no subdirectories except attachments)
+
+# Path to your Obsidian vault
+VAULT_PATH="$HOME/Documents/Obsidian/Notes"
+
+# Path to your Zola site (usually current directory)
+ZOLA_PATH="."
+
+# Publish script location
+SCRIPT_PATH="scripts/publish.py"
+
+# Note: With flat vault structure, the script scans all .md files in the
+# vault root and uses frontmatter to determine content type:
+#
+# Blog posts: No special fields, or type: "blog"
+# Book chapters: Has weight/chapter_number, or type: "book"
+#
+# Control publishing with publish: true/false in frontmatter

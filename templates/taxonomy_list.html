@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Tags - {{ config.title }}{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <div class="terminal-section">
+        <span class="prompt-line">$ ls -la /tags/</span>
+        <div class="output-text">
+            <p>total {{ terms | length }} tags</p>
+
+            {% for term in terms %}
+            <div class="file-entry">
+                <span class="permissions">drwxr-xr-x</span>
+                <span class="file-size">{{ term.pages | length }} posts</span>
+                <span class="file-date">---</span>
+                <a href="{{ term.permalink }}" class="file-name">#{{ term.name }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

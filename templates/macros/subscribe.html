@@ -1,0 +1,69 @@
+{% macro subscribe_section(feed_url, section_name) %}
+<div class="terminal-section subscribe-section">
+    <span class="prompt-line" aria-hidden="true">$ cat /notifications/subscribe.txt</span>
+    <div class="output-text">
+        <h2 class="subscribe-heading">Stay Updated</h2>
+        <p class="subscribe-description">Get notified when new {{ section_name }} are published.</p>
+
+        <div class="subscribe-options">
+            <div class="subscribe-option">
+                <h3 class="option-heading">RSS Feed</h3>
+                <p class="option-description">Subscribe via your favorite RSS reader:</p>
+                <div class="rss-links">
+                    <a href="{{ feed_url }}/rss.xml" class="rss-link" aria-label="Subscribe to RSS feed">
+                        <span aria-hidden="true">[</span>RSS<span aria-hidden="true">]</span>
+                    </a>
+                    <a href="{{ feed_url }}/atom.xml" class="rss-link" aria-label="Subscribe to Atom feed">
+                        <span aria-hidden="true">[</span>Atom<span aria-hidden="true">]</span>
+                    </a>
+                </div>
+                <p class="option-hint">Copy the feed URL into your RSS reader app</p>
+            </div>
+
+            {% if config.extra.newsletter_url %}
+            <div class="subscribe-option">
+                <h3 class="option-heading">Email Newsletter</h3>
+                <p class="option-description">Get updates delivered to your inbox:</p>
+                <a href="{{ config.extra.newsletter_url }}" class="subscribe-button" target="_blank" rel="noopener noreferrer">
+                    Subscribe via Email
+                </a>
+            </div>
+            {% endif %}
+
+            {% if config.extra.social_links %}
+            <div class="subscribe-option">
+                <h3 class="option-heading">Social Media</h3>
+                <p class="option-description">Follow for updates and announcements:</p>
+                <div class="social-links">
+                    {% if config.extra.mastodon %}
+                    <a href="{{ config.extra.mastodon }}" class="social-link" target="_blank" rel="noopener noreferrer me">
+                        <span aria-hidden="true">[</span>Mastodon<span aria-hidden="true">]</span>
+                    </a>
+                    {% endif %}
+                    {% if config.extra.twitter %}
+                    <a href="{{ config.extra.twitter }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <span aria-hidden="true">[</span>Twitter<span aria-hidden="true">]</span>
+                    </a>
+                    {% endif %}
+                    {% if config.extra.bluesky %}
+                    <a href="{{ config.extra.bluesky }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <span aria-hidden="true">[</span>Bluesky<span aria-hidden="true">]</span>
+                    </a>
+                    {% endif %}
+                    {% if config.extra.instagram %}
+                    <a href="{{ config.extra.instagram }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <span aria-hidden="true">[</span>Instagram<span aria-hidden="true">]</span>
+                    </a>
+                    {% endif %}
+                    {% if config.extra.threads %}
+                    <a href="{{ config.extra.threads }}" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <span aria-hidden="true">[</span>Threads<span aria-hidden="true">]</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro subscribe_section %}

@@ -1,0 +1,14 @@
+# Deployment Configuration for kelsea.io
+#
+# Copy this file to .deploy-config and fill in your values
+# Source this file before running deploy.sh:
+#   source .deploy-config && ./scripts/deploy.sh
+
+# S3 bucket name (required)
+export S3_BUCKET="your-bucket-name"
+
+# AWS profile to use (optional, defaults to 'default')
+export AWS_PROFILE="default"
+
+# CloudFront distribution ID (optional, for cache invalidation)
+export CLOUDFRONT_DIST_ID=""

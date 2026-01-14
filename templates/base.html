@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ config.title }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ get_url(path='terminal.css') }}">
+
+    <!-- RSS/Atom Feeds -->
+    <link rel="alternate" type="application/rss+xml" title="{{ config.title }} - RSS Feed" href="{{ get_url(path='rss.xml', trailing_slash=false) }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ config.title }} - Atom Feed" href="{{ get_url(path='atom.xml', trailing_slash=false) }}">
+
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="71167291-1b84-441d-873b-5f1c6dd7c920"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="crt" aria-hidden="true">
+        <div class="scanline"></div>
+    </div>
+
+    <div class="terminal-container">
+        <header class="terminal-header" role="banner">
+            <span class="terminal-title" aria-label="Kelsea.io Personal Terminal">KELSEA.IO - PERSONAL TERMINAL v1.0</span>
+            <span class="terminal-controls" aria-hidden="true">
+                <span class="control-btn minimize" aria-label="Minimize window" role="img">_</span>
+                <span class="control-btn maximize" aria-label="Maximize window" role="img">□</span>
+                <span class="control-btn close" aria-label="Close window" role="img">×</span>
+            </span>
+        </header>
+
+        <div class="terminal-body">
+            <div class="terminal-prompt" aria-hidden="true">
+                <span class="user">visitor</span>@<span class="host">kelsea.io</span>:~$
+            </div>
+
+            <nav class="terminal-nav" aria-label="Main navigation">
+                <span class="nav-command" aria-hidden="true">ls -la /site/</span>
+                <ul class="nav-links">
+                    <li><a href="{{ get_url(path='/') }}">Home</a></li>
+                    <li><a href="{{ get_url(path='/blog') }}">Blog</a></li>
+                    {% set books_section = get_section(path="books/_index.md", metadata_only=true) %}
+                    {% if books_section %}
+                        {% for subsection_path in books_section.subsections %}
+                            {% set book = get_section(path=subsection_path) %}
+                            <li><a href="{{ book.permalink }}">{{ book.extra.book_title | default(value=book.title) }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                    <li><a href="{{ get_url(path='/about') }}">About</a></li>
+                    <li><a href="{{ get_url(path='/projects') }}">Projects</a></li>
+                </ul>
+            </nav>
+
+            <main class="content-wrapper">
+                {% block content %}{% endblock %}
+            </main>
+
+            <div class="terminal-prompt terminal-cursor" aria-hidden="true">
+                <span class="user">visitor</span>@<span class="host">kelsea.io</span>:~$ <span class="cursor">█</span>
+            </div>
+        </div>
+
+        <footer class="terminal-footer" role="contentinfo">
+            <span class="footer-info">{{ config.extra.terminal_info | default(value="Kelsea.io") }}</span>
+        </footer>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+    <script src="{{ get_url(path='terminal.js') }}"></script>
+</body>
+</html>

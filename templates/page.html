@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} - {{ config.title }}{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <article class="terminal-section post-header">
+        <span class="prompt-line" aria-hidden="true">$ cat {{ page.title | slugify }}.md</span>
+
+        <h1 class="post-title">{{ page.title }}</h1>
+
+        <dl class="post-metadata">
+            {% if page.date %}
+            <div class="meta-item">
+                <dt class="meta-label">Published:</dt>
+                <dd><time datetime="{{ page.date }}">{{ page.date | date(format="%Y-%m-%d") }}</time></dd>
+            </div>
+            {% endif %}
+
+            {% if page.taxonomies.tags %}
+            <div class="meta-item">
+                <dt class="meta-label">Tags:</dt>
+                <dd>
+                    {% for tag in page.taxonomies.tags %}
+                    <span class="tag">#{{ tag }}</span>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </dd>
+            </div>
+            {% endif %}
+
+            <div class="meta-item">
+                <dt class="meta-label">Reading time:</dt>
+                <dd>{{ page.reading_time }} minutes</dd>
+            </div>
+
+            <div class="meta-item">
+                <dt class="meta-label">Words:</dt>
+                <dd>{{ page.word_count }}</dd>
+            </div>
+        </dl>
+
+        {% if page.description %}
+        <div class="post-description">
+            {{ page.description }}
+        </div>
+        {% endif %}
+
+        <div class="post-body">
+            {{ page.content | safe }}
+        </div>
+    </article>
+
+    {% if page.earlier or page.later %}
+    <nav class="terminal-section post-navigation" aria-label="Post navigation">
+        <span class="prompt-line" aria-hidden="true">$ ls ../</span>
+        <div class="output-text nav-posts">
+            {% if page.earlier %}
+            <div class="nav-post prev-post">
+                <span class="nav-label" aria-hidden="true">←</span>
+                <a href="{{ page.earlier.permalink }}" aria-label="Previous post: {{ page.earlier.title }}">Previous: {{ page.earlier.title }}</a>
+            </div>
+            {% endif %}
+
+            {% if page.later %}
+            <div class="nav-post next-post">
+                <span class="nav-label" aria-hidden="true">→</span>
+                <a href="{{ page.later.permalink }}" aria-label="Next post: {{ page.later.title }}">Next: {{ page.later.title }}</a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ cd /</span>
+        <div class="output-text">
+            <a href="{{ get_url(path='/blog') }}">Back to blog</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

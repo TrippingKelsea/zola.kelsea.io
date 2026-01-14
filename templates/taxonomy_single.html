@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Tag: {{ term.name }} - {{ config.title }}{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <div class="terminal-section">
+        <span class="prompt-line">$ find /blog -tag "{{ term.name }}"</span>
+        <div class="output-text">
+            <p>Found {{ term.pages | length }} posts tagged with #{{ term.name }}</p>
+
+            {% for page in term.pages %}
+            <div class="file-entry blog-post-entry">
+                <span class="permissions">-rw-r--r--</span>
+                <span class="file-size">{{ page.word_count }}w</span>
+                <span class="file-date">{{ page.date | date(format="%Y-%m-%d %H:%M") }}</span>
+                <a href="{{ page.permalink }}" class="file-name">{{ page.title }}</a>
+
+                {% if page.description %}
+                <div class="post-description">
+                    {{ page.description }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <span class="prompt-line">$ cd /blog</span>
+        <div class="output-text">
+            <a href="{{ get_url(path='/blog') }}">← Back to all posts</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

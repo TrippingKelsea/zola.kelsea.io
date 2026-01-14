@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% import "macros/subscribe.html" as subscribe %}
+
+{% block title %}Blog - {{ config.title }}{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <div class="terminal-section">
+        <span class="prompt-line">$ ls -lah /blog/posts/</span>
+        <div class="output-text">
+            <p>total {{ section.pages | length }} posts</p>
+
+            {% for page in section.pages %}
+            <div class="file-entry blog-post-entry">
+                <span class="permissions">-rw-r--r--</span>
+                <span class="file-size">{{ page.word_count }}w</span>
+                <span class="file-date">{{ page.date | date(format="%Y-%m-%d %H:%M") }}</span>
+                <a href="{{ page.permalink }}" class="file-name">{{ page.title }}</a>
+
+                {% if page.description %}
+                <div class="post-description">
+                    {{ page.description }}
+                </div>
+                {% endif %}
+
+                {% if page.taxonomies.tags %}
+                <div class="post-tags">
+                    Tags:
+                    {% for tag in page.taxonomies.tags %}
+                    <span class="tag">#{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if paginator %}
+    <div class="terminal-section pagination">
+        <span class="prompt-line">$ navigation</span>
+        <div class="output-text">
+            {% if paginator.previous %}
+            <a href="{{ paginator.previous }}">&lt;&lt; Previous</a>
+            {% endif %}
+
+            <span>Page {{ paginator.current_index }} of {{ paginator.number_pagers }}</span>
+
+            {% if paginator.next %}
+            <a href="{{ paginator.next }}">Next &gt;&gt;</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {{ subscribe::subscribe_section(feed_url="/blog", section_name="blog posts") }}
+</div>
+{% endblock %}

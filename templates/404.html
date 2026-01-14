@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found - {{ config.title }}{% endblock %}
+
+{% block content %}
+<div class="terminal-output">
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ cat /var/log/error.log</span>
+        <div class="output-text error-output">
+            <pre class="error-ascii" aria-hidden="true">
+  _  _    ___  _  _
+ | || |  / _ \| || |
+ | || |_| | | | || |_
+ |__   _| | | |__   _|
+    | | | |_| |  | |
+    |_|  \___/   |_|
+
+ ERROR: FILE NOT FOUND
+            </pre>
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <h1 class="sr-only">404 - Page Not Found</h1>
+        <span class="prompt-line" aria-hidden="true">$ ls "{{ current_path | default(value='/requested/page') }}"</span>
+        <div class="output-text">
+            <p class="error-message">ls: cannot access: No such file or directory</p>
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ echo $?</span>
+        <div class="output-text">
+            <p>1</p>
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ man recovery</span>
+        <div class="output-text">
+            <p><strong>RECOVERY(1)</strong> - How to find what you're looking for</p>
+            <br>
+            <p><strong>DESCRIPTION</strong></p>
+            <p class="man-indent">The page you requested could not be found. This could mean:</p>
+            <ul class="man-list">
+                <li>The page has been moved or deleted</li>
+                <li>You followed an outdated link</li>
+                <li>There's a typo in the URL</li>
+            </ul>
+            <br>
+            <p><strong>SEE ALSO</strong></p>
+            <p class="man-indent">Try one of these commands:</p>
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ suggest --helpful-links</span>
+        <div class="output-text">
+            <div class="helpful-links">
+                <a href="{{ get_url(path='/') }}" class="recovery-link">cd /home</a>
+                <span class="link-description">- Return to homepage</span>
+            </div>
+            <div class="helpful-links">
+                <a href="{{ get_url(path='/blog') }}" class="recovery-link">ls /blog</a>
+                <span class="link-description">- Browse all posts</span>
+            </div>
+            {% set books_section = get_section(path="books/_index.md", metadata_only=true) %}
+            {% if books_section and books_section.subsections %}
+            {% for subsection_path in books_section.subsections %}
+            {% set book = get_section(path=subsection_path) %}
+            <div class="helpful-links">
+                <a href="{{ book.permalink }}" class="recovery-link">cat /books/{{ book.title | slugify }}</a>
+                <span class="link-description">- Read {{ book.extra.book_title | default(value=book.title) }}</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <div class="helpful-links">
+                <a href="{{ get_url(path='/about') }}" class="recovery-link">whoami</a>
+                <span class="link-description">- About me</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="terminal-section">
+        <span class="prompt-line" aria-hidden="true">$ _</span>
+    </div>
+</div>
+{% endblock %}
