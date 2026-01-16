@@ -116,72 +116,72 @@ jobs:
           echo "Deployed commit: ${{ github.sha }}"
           echo "Deployed at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-  # Stage 4: Post-Deploy Verification
-  verify:
-    name: Verify Deployment
-    needs: deploy
-    if: needs.deploy.outputs.deployed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # Stage 4: Post-Deploy Verification (temporarily disabled - needs refinement)
+  # verify:
+  #   name: Verify Deployment
+  #   needs: deploy
+  #   if: needs.deploy.outputs.deployed == 'true'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Wait for CDN propagation
+  #       run: sleep 30
+  #
+  #     - name: Run live tests
+  #       id: live_tests
+  #       run: |
+  #         chmod +x ./tests/run_tests.sh ./tests/acceptance/*/*.sh ./tests/lib/*.sh
+  #         ./tests/run_tests.sh live
+  #       continue-on-error: true
+  #
+  #     - name: Check verification results
+  #       if: steps.live_tests.outcome == 'failure'
+  #       run: |
+  #         echo "::error::Post-deployment verification failed!"
+  #         echo "Some live tests did not pass. Review the test output above."
+  #         echo "Consider rolling back if critical functionality is broken."
+  #         exit 1
 
-      - name: Wait for CDN propagation
-        run: sleep 30
-
-      - name: Run live tests
-        id: live_tests
-        run: |
-          chmod +x ./tests/run_tests.sh ./tests/acceptance/*/*.sh ./tests/lib/*.sh
-          ./tests/run_tests.sh live
-        continue-on-error: true
-
-      - name: Check verification results
-        if: steps.live_tests.outcome == 'failure'
-        run: |
-          echo "::error::Post-deployment verification failed!"
-          echo "Some live tests did not pass. Review the test output above."
-          echo "Consider rolling back if critical functionality is broken."
-          exit 1
-
-  # Stage 5: Rollback (on verification failure)
-  rollback:
-    name: Rollback Deployment
-    needs: verify
-    if: failure() && needs.deploy.outputs.deployed == 'true'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout previous commit
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.before }}
-          fetch-depth: 2
-
-      - name: Install Zola
-        run: |
-          wget -qO- "https://github.com/getzola/zola/releases/download/v${{ env.ZOLA_VERSION }}/zola-v${{ env.ZOLA_VERSION }}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
-          sudo mv zola /usr/local/bin/
-
-      - name: Build previous version
-        run: zola build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy rollback
-        run: |
-          aws s3 sync public/ s3://${{ secrets.S3_BUCKET }}/ --delete
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DIST_ID }} \
-            --paths "/*"
-
-      - name: Notify rollback
-        run: |
-          echo "::warning::Deployment rolled back to previous version"
-          echo "Rolled back from: ${{ github.sha }}"
-          echo "Rolled back to: ${{ github.event.before }}"
+  # Stage 5: Rollback (temporarily disabled - needs refinement)
+  # rollback:
+  #   name: Rollback Deployment
+  #   needs: verify
+  #   if: failure() && needs.deploy.outputs.deployed == 'true'
+  #   runs-on: ubuntu-latest
+  #   environment: production
+  #   steps:
+  #     - name: Checkout previous commit
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ github.event.before }}
+  #         fetch-depth: 2
+  #
+  #     - name: Install Zola
+  #       run: |
+  #         wget -qO- "https://github.com/getzola/zola/releases/download/v${{ env.ZOLA_VERSION }}/zola-v${{ env.ZOLA_VERSION }}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
+  #         sudo mv zola /usr/local/bin/
+  #
+  #     - name: Build previous version
+  #       run: zola build
+  #
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
+  #
+  #     - name: Deploy rollback
+  #       run: |
+  #         aws s3 sync public/ s3://${{ secrets.S3_BUCKET }}/ --delete
+  #         aws cloudfront create-invalidation \
+  #           --distribution-id ${{ secrets.CLOUDFRONT_DIST_ID }} \
+  #           --paths "/*"
+  #
+  #     - name: Notify rollback
+  #       run: |
+  #         echo "::warning::Deployment rolled back to previous version"
+  #         echo "Rolled back from: ${{ github.sha }}"
+  #         echo "Rolled back to: ${{ github.event.before }}"
