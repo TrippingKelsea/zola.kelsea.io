@@ -11,6 +11,7 @@ created = "2025-05-02 15:25:35"
 book_title = "Waltzing Through Chaos"
 chapter_title = "Tree Forts, BB Guns, and Masturbation"
 chapter_number = "16"
+content_warning = "This chapter contains explicit descriptions of childhood sexual exploration and uses period-appropriate language that may be considered offensive today."
 +++
 
 # Tree Forts, BB Guns, and Masturbation

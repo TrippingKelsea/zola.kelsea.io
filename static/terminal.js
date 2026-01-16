@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize theme switcher first (before any visual setup)
     initThemeSwitcher();
 
+    // Initialize content warning reveal functionality
+    initContentWarning();
+
     // Add typing effect to the home page
     const terminalOutput = document.querySelector('.terminal-output');
 
@@ -20,6 +23,72 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhance link interactions
     enhanceLinks();
 });
+
+// ==================================================================
+// CONTENT WARNING / SPOILER REVEAL
+// ==================================================================
+
+function initContentWarning() {
+    const revealButtons = document.querySelectorAll('.reveal-content-btn');
+
+    revealButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            revealContent(this);
+        });
+
+        // Also handle Enter and Space keys for accessibility
+        button.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                revealContent(this);
+            }
+        });
+    });
+}
+
+function revealContent(button) {
+    const contentId = button.getAttribute('aria-controls');
+    const contentElement = document.getElementById(contentId);
+    const warningBox = button.closest('.content-warning');
+
+    if (contentElement) {
+        // Update ARIA attributes
+        button.setAttribute('aria-expanded', 'true');
+        contentElement.setAttribute('aria-hidden', 'false');
+
+        // Remove blur and show content
+        contentElement.classList.remove('content-hidden');
+        contentElement.classList.add('content-revealed');
+
+        // Hide the warning box
+        if (warningBox) {
+            warningBox.classList.add('warning-dismissed');
+        }
+
+        // Announce to screen readers
+        announceContentRevealed();
+
+        // Move focus to the content for keyboard users
+        contentElement.setAttribute('tabindex', '-1');
+        contentElement.focus();
+    }
+}
+
+function announceContentRevealed() {
+    // Create or update live region for screen reader announcement
+    let announcer = document.getElementById('content-announcer');
+    if (!announcer) {
+        announcer = document.createElement('div');
+        announcer.id = 'content-announcer';
+        announcer.setAttribute('role', 'status');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.className = 'sr-only';
+        document.body.appendChild(announcer);
+    }
+
+    announcer.textContent = 'Content revealed. You may now read the chapter.';
+}
 
 // ==================================================================
 // THEME SWITCHER

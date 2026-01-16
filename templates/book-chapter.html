@@ -49,6 +49,39 @@
         </div>
     </div>
 
+    {# Chapter Navigation - Top #}
+    {# Note: Using lower/higher because section sorts by weight #}
+    {% if page.lower or page.higher %}
+    <nav class="terminal-section chapter-navigation chapter-navigation-top" aria-label="Chapter navigation">
+        <span class="prompt-line">$ navigate chapters</span>
+        <div class="output-text nav-chapters">
+            {% if page.lower %}
+            <div class="nav-chapter prev-chapter">
+                <span class="nav-label">← Previous Chapter</span>
+                <a href="{{ page.lower.permalink }}">
+                    {% if page.lower.extra.chapter_number %}
+                    Chapter {{ page.lower.extra.chapter_number }}:
+                    {% endif %}
+                    {{ page.lower.title }}
+                </a>
+            </div>
+            {% endif %}
+
+            {% if page.higher %}
+            <div class="nav-chapter next-chapter">
+                <span class="nav-label">Next Chapter →</span>
+                <a href="{{ page.higher.permalink }}">
+                    {% if page.higher.extra.chapter_number %}
+                    Chapter {{ page.higher.extra.chapter_number }}:
+                    {% endif %}
+                    {{ page.higher.title }}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
+
     <article class="chapter-content">
         <h1 class="chapter-title">
             {% if page.extra.chapter_number %}
@@ -64,40 +97,69 @@
         </div>
         {% endif %}
 
+        {# Content Warning / Spoiler Section #}
+        {% if page.extra.content_warning %}
+        <div class="content-warning" role="region" aria-label="Content warning">
+            <div class="content-warning-header">
+                <span class="warning-icon" aria-hidden="true">⚠</span>
+                <span class="warning-title">Content Warning</span>
+            </div>
+            <p class="warning-description">{{ page.extra.content_warning }}</p>
+            <button
+                type="button"
+                class="reveal-content-btn"
+                aria-expanded="false"
+                aria-controls="chapter-body-{{ page.extra.chapter_number | default(value='content') }}"
+            >
+                <span class="reveal-text">Click or tap to reveal content</span>
+                <span class="reveal-hint">(Press Enter or Space to reveal)</span>
+            </button>
+        </div>
+        <div
+            id="chapter-body-{{ page.extra.chapter_number | default(value='content') }}"
+            class="chapter-body content-hidden"
+            aria-hidden="true"
+        >
+            {{ page.content | safe }}
+        </div>
+        {% else %}
         <div class="chapter-body">
             {{ page.content | safe }}
         </div>
+        {% endif %}
     </article>
 
-    {% if page.earlier or page.later %}
-    <div class="terminal-section chapter-navigation">
+    {# Chapter Navigation - Bottom #}
+    {# Note: Using lower/higher because section sorts by weight #}
+    {% if page.lower or page.higher %}
+    <nav class="terminal-section chapter-navigation chapter-navigation-bottom" aria-label="Chapter navigation">
         <span class="prompt-line">$ navigate chapters</span>
         <div class="output-text nav-chapters">
-            {% if page.earlier %}
+            {% if page.lower %}
             <div class="nav-chapter prev-chapter">
                 <span class="nav-label">← Previous Chapter</span>
-                <a href="{{ page.earlier.permalink }}">
-                    {% if page.earlier.extra.chapter_number %}
-                    Chapter {{ page.earlier.extra.chapter_number }}:
+                <a href="{{ page.lower.permalink }}">
+                    {% if page.lower.extra.chapter_number %}
+                    Chapter {{ page.lower.extra.chapter_number }}:
                     {% endif %}
-                    {{ page.earlier.title }}
+                    {{ page.lower.title }}
                 </a>
             </div>
             {% endif %}
 
-            {% if page.later %}
+            {% if page.higher %}
             <div class="nav-chapter next-chapter">
                 <span class="nav-label">Next Chapter →</span>
-                <a href="{{ page.later.permalink }}">
-                    {% if page.later.extra.chapter_number %}
-                    Chapter {{ page.later.extra.chapter_number }}:
+                <a href="{{ page.higher.permalink }}">
+                    {% if page.higher.extra.chapter_number %}
+                    Chapter {{ page.higher.extra.chapter_number }}:
                     {% endif %}
-                    {{ page.later.title }}
+                    {{ page.higher.title }}
                 </a>
             </div>
             {% endif %}
         </div>
-    </div>
+    </nav>
     {% endif %}
 
     <div class="terminal-section">
