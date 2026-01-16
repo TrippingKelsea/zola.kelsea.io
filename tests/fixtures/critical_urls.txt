@@ -1,0 +1,24 @@
+# Critical URLs for kelsea.io
+# These must return HTTP 200 after deployment
+
+# Homepage
+/
+
+# Core Pages
+/about/
+/projects/
+/blog/
+
+# Book Section
+/books/waltzing-through-chaos/
+
+# Feeds
+/rss.xml
+/atom.xml
+
+# Static Assets
+/terminal.css
+/terminal.js
+
+# 404 Page (should return 200 when accessed directly)
+/404.html

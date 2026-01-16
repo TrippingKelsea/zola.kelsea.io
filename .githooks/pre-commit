@@ -1,0 +1,37 @@
+#!/bin/bash
+# Pre-commit hook for kelsea.io
+# Runs quick content validation before allowing commits
+
+set -e
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RESET='\033[0m'
+
+echo ""
+echo -e "${YELLOW}Running pre-commit tests...${RESET}"
+echo ""
+
+# Get the project root (where .git is)
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+
+# Run quick content tests
+if "${PROJECT_ROOT}/tests/run_tests.sh" precommit; then
+    echo ""
+    echo -e "${GREEN}Pre-commit tests passed!${RESET}"
+    echo ""
+    exit 0
+else
+    echo ""
+    echo -e "${RED}Pre-commit tests failed. Commit aborted.${RESET}"
+    echo ""
+    echo "To see detailed output, run:"
+    echo "  ./tests/run_tests.sh content"
+    echo ""
+    echo "To skip this check (not recommended), use:"
+    echo "  git commit --no-verify"
+    echo ""
+    exit 1
+fi
