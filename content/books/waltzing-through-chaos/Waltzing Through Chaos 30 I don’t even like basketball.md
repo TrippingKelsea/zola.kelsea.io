@@ -2,6 +2,8 @@
 title = "I don't even like basketball"
 weight = 30
 date = "2026-01-15"
+# Exclude from site search index due to content warning
+in_search_index = false
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]

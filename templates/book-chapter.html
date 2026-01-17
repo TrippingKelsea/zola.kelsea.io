@@ -4,6 +4,13 @@
 {% if page.extra.chapter_number %}Chapter {{ page.extra.chapter_number }}: {% endif %}{{ page.title }} - {{ config.title }}
 {% endblock %}
 
+{% block extra_head %}
+{% if page.extra.content_warning %}
+{# Exclude chapters with content warnings from search engines #}
+<meta name="robots" content="noindex, nofollow">
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="terminal-output">
     <div class="terminal-section chapter-header">

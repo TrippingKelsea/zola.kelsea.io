@@ -2,6 +2,8 @@
 title = "A Bitch of a Beach Vacation"
 weight = 29
 date = "2026-01-15"
+# Exclude from site search index due to content warning
+in_search_index = false
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]

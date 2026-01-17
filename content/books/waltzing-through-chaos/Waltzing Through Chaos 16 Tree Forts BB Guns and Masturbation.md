@@ -2,6 +2,8 @@
 title = "Tree Forts, BB Guns, and Masturbation"
 weight = 16
 date = "2026-01-13"
+# Exclude from site search index due to content warning
+in_search_index = false
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]

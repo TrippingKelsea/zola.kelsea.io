@@ -86,7 +86,7 @@ jobs:
         id: deploy
         run: |
           # Sync with appropriate cache headers
-          # Long cache for static assets
+          # Long cache for static assets (CSS, JS, images, fonts)
           aws s3 sync public/ s3://${{ secrets.S3_BUCKET }}/ \
             --delete \
             --cache-control "max-age=31536000,public" \
@@ -95,9 +95,11 @@ jobs:
             --exclude "*.json" \
             --exclude "search_index.*"
 
-          # Short cache for HTML and dynamic content
+          # Short cache for HTML and dynamic content (feeds, search index)
+          # Note: --include only works after --exclude "*"
           aws s3 sync public/ s3://${{ secrets.S3_BUCKET }}/ \
             --cache-control "max-age=3600,public" \
+            --exclude "*" \
             --include "*.html" \
             --include "*.xml" \
             --include "*.json" \
