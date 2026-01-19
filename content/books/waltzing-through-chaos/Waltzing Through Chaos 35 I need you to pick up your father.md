@@ -2,6 +2,7 @@
 title = "I need you to pick up your father"
 weight = 35
 date = "2026-01-19"
+updated = "2026-01-19 14:36:24"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos", "coerced-complicity", "parental-manipulation", "betrayal", "alcoholic-caregiver", "retroactive-guilt", "hit-and-run", "family-trauma", "underage-legal-exposure"]
@@ -11,9 +12,8 @@ created = "2025-05-05 11:07:16"
 book_title = "Waltzing Through Chaos"
 chapter_title = "I need you to pick up your father"
 chapter_number = "35"
+content_warning = "This chapter contains emotionally intense themes including parental manipulation, coerced complicity in a felony, underage involvement in a hit-and-run, substance abuse, and betrayal by a caregiver. Readers sensitive to family trauma, legal gray areas, or psychological distress may wish to proceed with caution."
 +++
-
-> **Content Warning**: This chapter contains emotionally intense themes including parental manipulation, coerced complicity in a felony, underage involvement in a hit-and-run, substance abuse, and betrayal by a caregiver. Readers sensitive to family trauma, legal gray areas, or psychological distress may wish to proceed with caution.
 
 # I Need You to Pick Up Your Father
 
