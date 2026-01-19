@@ -1245,6 +1245,53 @@ textarea:focus-visible {
     display: none;
 }
 
+/* Legal Disclaimer within Content Warning */
+.legal-disclaimer {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid var(--dim-fg);
+    background: rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.legal-disclaimer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.legal-icon {
+    font-size: 18px;
+    color: var(--dim-fg);
+    font-weight: bold;
+}
+
+.legal-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--dim-fg);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.legal-description {
+    color: var(--dim-fg);
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.legal-description a {
+    color: var(--primary-fg);
+    text-decoration: underline;
+}
+
+.legal-description a:hover,
+.legal-description a:focus {
+    color: var(--secondary-fg);
+}
+
 /* Reduced motion: skip blur animation */
 @media (prefers-reduced-motion: reduce) {
     .content-hidden {

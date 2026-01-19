@@ -112,6 +112,15 @@
                 <span class="warning-title">Content Warning</span>
             </div>
             <p class="warning-description">{{ page.extra.content_warning }}</p>
+            {% if page.extra.legal_disclaimer %}
+            <div class="legal-disclaimer">
+                <div class="legal-disclaimer-header">
+                    <span class="legal-icon" aria-hidden="true">§</span>
+                    <span class="legal-title">Legal Disclaimer</span>
+                </div>
+                <p class="legal-description">{{ page.extra.legal_disclaimer | markdown(inline=true) | safe }}</p>
+            </div>
+            {% endif %}
             <button
                 type="button"
                 class="reveal-content-btn"
