@@ -2,6 +2,7 @@
 title = "I need you to pay me back for those trading cards"
 weight = 17
 date = "2026-01-13"
+updated = "2026-01-26 21:44:06"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -43,7 +44,7 @@ He ruined the first replacement liver.
 
 That was why he didn’t drink anymore.
 
-He was *really* tall—way taller than Dad,  
+He was *really* tall, way taller than Dad,  
 and Dad was about six foot one, Mom had told me once.  
 
 ---
@@ -56,7 +57,7 @@ We stayed with Grandma and Grandpa for a couple of days.
 One of those days,  
 they took me grocery shopping with them.  
 
-We went to one of those warehouse stores—like a Sam’s or Costco—  
+We went to one of those warehouse stores, like a Sam’s or Costco,  
 but I don’t remember which.  
 I had never been to one before.  
 It was way bigger than a regular grocery store.
@@ -83,9 +84,9 @@ started to solidify it as a hobby.
 I had sometimes pocketed a couple of the foil packs at the grocery store.  
 Sometimes I’d slip them into the cart if Mom wasn’t looking.
 
-So naturally—  
-with a huge display in front of me—  
-I asked Grandpa if he’d buy me a pack.
+So naturally,  
+with a huge display of trading cards in front of me, 
+I asked my Grandpa if he’d buy me a pack.
 
 He looked at them and said,  
 *"They’re sold by the box here, not the pack."*

@@ -2,6 +2,7 @@
 title = "Cousin Casey was a Stowaway"
 weight = 13
 date = "2026-01-13"
+updated = "2026-01-26 21:44:06"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -21,7 +22,7 @@ but Boompa rented a 15-passenger van for the trip.
 
 I got my own bench.  
 NJ got her own bench.  
-Mom, Granny, and the baby (Fletcher) shared a bench.  
+Mom, Granny, and the baby (Sterling) shared a bench.  
 Dad and Boompa traded off driving.
 
 Aunt Betty lived in Orlando.  
@@ -56,7 +57,7 @@ because duh.
 When it was time to pile into the van and head home,  
 Casey convinced me to help him hide in the van.  
 
-I said sure—because Casey was cool.
+I said sure, because Casey was cool.
 
 He didn’t even grab a change of clothes.
 

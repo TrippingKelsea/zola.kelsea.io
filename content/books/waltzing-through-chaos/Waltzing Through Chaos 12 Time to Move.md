@@ -2,6 +2,7 @@
 title = "Time to Move"
 weight = 12
 date = "2026-01-13"
+updated = "2026-01-26 21:44:06"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -16,7 +17,7 @@ chapter_number = "12"
 # Time to Move
 
 Three large U-Haul trucks.  
-The big ones—the biggest ones you could rent at the time.  
+The big ones, the biggest ones you could rent at the time.  
 I remember **Boompa** making a big deal about the bit that overhung the cab,  
 like it had a special name. I can’t remember what it was.
 
@@ -25,7 +26,7 @@ It was just after coming back from Cleveland,
 and we’d detoured through Lynchburg, Virginia,  
 where my aunt and her husband lived.
 
-Apparently, my mother fell in love with the area—  
+Apparently, my mother fell in love with the area,  
 and that was all it took.  
 It’s not like things were going well for the family in Houston anymore,  
 so… Virginia, here we came.

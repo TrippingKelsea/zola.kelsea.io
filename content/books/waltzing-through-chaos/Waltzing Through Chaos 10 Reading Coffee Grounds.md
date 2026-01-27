@@ -2,6 +2,7 @@
 title = "Reading Coffee Grounds"
 weight = 10
 date = "2026-01-13"
+updated = "2026-01-26 21:44:06"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -28,18 +29,18 @@ This is the story of her funeral.
 
 I don’t recall precisely how old I was.  
 Young—somewhere between seven and eight, I think.  
-I know this, because it was before we moved to Virginia.
+I know this, because it was right before we moved to Virginia.
 
 We were already living together with Granny and Boompa.  
 It was a family road trip.  
 The funeral was in Cleveland.
 
-That’s where Boompa grew up—Cleveland.  
+That’s where Boompa grew up, Cleveland.  
 He used to tell me stories about it.  
 He made it sound like growing up in New York.  
 I think he secretly wanted to have grown up in New York.
 
-His mother—my great-grandmother—had immigrated to the U.S. from Sicily.  
+His mother, my great-grandmother, had immigrated to the U.S. from Sicily.  
 He told me stories about that too.  
 He was born shortly after they arrived.
 
@@ -50,10 +51,10 @@ His name was **Joseph**, and he had a sister named **Josephine**.
 *A Catholic thing,* or so I was told.
 
 He had a brother, **Sammy**, too.  
-I don’t remember Sammy—apparently he gave me my first haircut.  
+I don’t remember Sammy, apparently he gave me my first haircut.  
 He was a barber.
 
-Sammy died—before I can remember.  
+Sammy died before I can remember.  
 Boompa told me he was shot to death in the street for his wallet.  
 
 *"Never let anyone know how much money is in your wallet,"*  
