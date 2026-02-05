@@ -2,6 +2,7 @@
 title = "Starting Early"
 weight = 14
 date = "2026-01-13"
+updated = "2026-02-05 14:37:06"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -35,7 +36,7 @@ Playing around with what a thousand `GOTO` statements
 and some user input logic could do.  
 Seeing if I could make the [turtle](turtle) --> draw cool shapes on the screen.
 
-**Spaghettification<!-- BROKEN LINK: [Spaghettification](Spaghettification) -->** was the new word of the day—  
+**[Spaghettification](Spaghettification)** was the new word of the day—  
 maybe of the year.  
 All choices in the game eventually led you to being spaghettified.
 
