@@ -1,9 +1,7 @@
 +++
 title = "Pargos"
 weight = 18
-date = "2026-01-15"
-# Exclude from site search index due to content warning
-in_search_index = false
+date = "2026-03-02"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -107,23 +105,18 @@ I started sucking on one of them,
 and she pushed my hand down between her legs.
 
 I wasn’t expecting the slickness I felt.  
-I didn’t know what to expect—  
-but it wasn’t that.
+I didn’t know what to expect.  
+But it wasn’t that.
 
 She had a tight grip on my hand,  
 using it to rub herself.  
 She was moaning,  
 her other hand keeping my head firmly in place on her breast.
 
-I was in an awkward and uncomfortable position—  
+I was in an awkward and uncomfortable position,  
 half on, half off the couch, lying on her.
 
-Faster and faster, she used my hand—  
-my fingers slipping in and out of her,  
-her moans growing louder,  
-her body convulsing.
-
-Then she stopped.  
+This continued for several minutes, and then she stopped.  
 Pulled my head up by my hair.
 
 *"Take your pants off and fuck me,"* she said.
@@ -145,5 +138,6 @@ As I crawled into bed,
 he popped his head up from his own.
 
 *"I watched you fuck my mom,"* he said.  
-*"It was hot."*
+
+His words lingered with me as I tried to get to sleep.
 
