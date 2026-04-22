@@ -2,6 +2,7 @@
 title = "Parties in the Woods"
 weight = 51
 date = "2026-04-22"
+updated = "2026-04-22 14:07:56"
 
 [taxonomies]
 tags = ["Waltzing-Through-Chaos"]
@@ -17,7 +18,7 @@ book_tags = ["Reckless Drinking", "sexualized-deflection", "self-destruction", "
 
 # Parties in the Woods
 
-[Derek](Derek) and I had gone to this party.  
+Derek and I had gone to this party.  
 It was a bonfire gathering way out in the boonies, someone’s land in middle of nowhere.
 
 There was this girl I kept hitting on all night. I have zero recollection of her name, I may not have even gotten it.
