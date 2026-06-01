@@ -2,38 +2,15 @@
 # Wrapper script for easy publishing from Obsidian to Zola
 # Updated for flat vault structure (no subdirectories)
 
-# Resolve paths from the repository root so the script works from any cwd.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-CONFIG_PATH="${PUBLISH_CONFIG:-$PROJECT_DIR/config.cfg}"
-
-# Load configuration. config.cfg is expected to be a symlink to the active
-# machine-specific config, but .publish-config remains supported for older setups.
-if [ -f "$CONFIG_PATH" ]; then
-    source "$CONFIG_PATH"
-elif [ -f "$PROJECT_DIR/.publish-config" ]; then
-    echo "⚠️  No config.cfg found. Falling back to .publish-config."
-    source "$PROJECT_DIR/.publish-config"
+# Load configuration if it exists
+if [ -f .publish-config ]; then
+    source .publish-config
 else
-    echo "❌ No publishing config found."
-    echo "   Create config.cfg as a symlink to fw16-orig.cfg or Callisto.cfg."
-    exit 1
-fi
-
-ZOLA_PATH="${ZOLA_PATH:-.}"
-SCRIPT_PATH="${SCRIPT_PATH:-scripts/publish.py}"
-
-if [ -z "${VAULT_PATH:-}" ]; then
-    echo "❌ VAULT_PATH is not set in $CONFIG_PATH"
-    exit 1
-fi
-
-if [[ "$ZOLA_PATH" != /* ]]; then
-    ZOLA_PATH="$PROJECT_DIR/$ZOLA_PATH"
-fi
-
-if [[ "$SCRIPT_PATH" != /* ]]; then
-    SCRIPT_PATH="$PROJECT_DIR/$SCRIPT_PATH"
+    echo "⚠️  No .publish-config found. Using defaults."
+    echo "   Copy .publish-config.example to .publish-config and customize."
+    VAULT_PATH="/mnt/OhShit-Local/Obsidian/Notes"
+    ZOLA_PATH="."
+    SCRIPT_PATH="scripts/publish.py"
 fi
 
 # Colors for output
@@ -80,23 +57,23 @@ EOF
 }
 
 # Parse command line arguments
-TYPE_FILTER=()
-DRY_RUN=()
+TYPE_FILTER=""
+DRY_RUN=""
 DO_BUILD=false
 DO_SERVE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --blog-only)
-            TYPE_FILTER=(--type blog)
+            TYPE_FILTER="--type blog"
             shift
             ;;
         --book-only)
-            TYPE_FILTER=(--type book)
+            TYPE_FILTER="--type book"
             shift
             ;;
         --dry-run)
-            DRY_RUN=(--dry-run)
+            DRY_RUN="--dry-run"
             shift
             ;;
         --build)
@@ -118,14 +95,20 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Build the command
-CMD=(python3 "$SCRIPT_PATH" --vault "$VAULT_PATH" --zola "$ZOLA_PATH")
-CMD+=("${TYPE_FILTER[@]}")
-CMD+=("${DRY_RUN[@]}")
+CMD="python3 $SCRIPT_PATH --vault \"$VAULT_PATH\" --zola \"$ZOLA_PATH\""
+
+if [ -n "$TYPE_FILTER" ]; then
+    CMD="$CMD $TYPE_FILTER"
+fi
+
+if [ -n "$DRY_RUN" ]; then
+    CMD="$CMD $DRY_RUN"
+fi
 
 # Execute the publish command
 echo -e "${GREEN}🚀 Publishing from Obsidian to Zola${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-"${CMD[@]}"
+eval $CMD
 
 # Build if requested
 if [ "$DO_BUILD" = true ] && [ -z "$DRY_RUN" ]; then

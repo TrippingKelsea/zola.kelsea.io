@@ -16,35 +16,6 @@ from datetime import datetime
 import argparse
 
 
-def load_config(config_path):
-    """Load shell-style KEY=VALUE config used by publish.sh."""
-    config = {}
-    path = Path(config_path)
-
-    if not path.exists():
-        return config
-
-    with open(path, 'r', encoding='utf-8') as f:
-        for raw_line in f:
-            line = raw_line.strip()
-            if not line or line.startswith('#') or '=' not in line:
-                continue
-
-            key, value = line.split('=', 1)
-            key = key.strip()
-            value = value.strip()
-
-            if not key:
-                continue
-
-            if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
-                value = value[1:-1]
-
-            config[key] = os.path.expanduser(os.path.expandvars(value))
-
-    return config
-
-
 class ObsidianToZola:
     def __init__(self, vault_path, zola_path):
         self.vault_path = Path(vault_path)
@@ -606,20 +577,17 @@ How it works:
     - No publish field → SKIPS (safe default)
 
 Examples:
-  # Publish all files marked for publishing using config.cfg
-  %(prog)s
+  # Publish all files marked for publishing
+  %(prog)s --vault ~/Obsidian/Notes
 
-  # Publish only blog posts using config.cfg
-  %(prog)s --type blog
+  # Publish only blog posts
+  %(prog)s --vault ~/Obsidian/Notes --type blog
 
-  # Publish only book chapters (all books) using config.cfg
-  %(prog)s --type book
+  # Publish only book chapters (all books)
+  %(prog)s --vault ~/Obsidian/Notes --type book
 
   # Dry run (preview without copying)
-  %(prog)s --dry-run
-
-  # Override config.cfg for one run
-  %(prog)s --vault /path/to/vault --dry-run
+  %(prog)s --vault ~/Obsidian/Notes --dry-run
 
 Frontmatter Examples:
 
@@ -667,22 +635,16 @@ Frontmatter Examples:
         """
     )
 
-    default_config = Path(__file__).resolve().parent.parent / "config.cfg"
-
-    parser.add_argument(
-        '--config',
-        default=str(default_config),
-        help='Path to publishing config (default: repository config.cfg)'
-    )
-
     parser.add_argument(
         '--vault',
-        help='Path to your Obsidian vault (overrides config)'
+        required=True,
+        help='Path to your Obsidian vault'
     )
 
     parser.add_argument(
         '--zola',
-        help='Path to your Zola site (overrides config, default: current directory)'
+        default='.',
+        help='Path to your Zola site (default: current directory)'
     )
 
     parser.add_argument(
@@ -705,14 +667,7 @@ Frontmatter Examples:
 
     args = parser.parse_args()
 
-    config = load_config(args.config)
-    vault_path = args.vault or config.get('VAULT_PATH')
-    zola_path = args.zola or config.get('ZOLA_PATH', '.')
-
-    if not vault_path:
-        parser.error("VAULT_PATH is required. Set it in config.cfg or pass --vault.")
-
-    publisher = ObsidianToZola(vault_path, zola_path)
+    publisher = ObsidianToZola(args.vault, args.zola)
     publisher.scan_and_publish(args.dry_run, args.type, args.yes)
 
     print("\n✅ Publishing complete!")

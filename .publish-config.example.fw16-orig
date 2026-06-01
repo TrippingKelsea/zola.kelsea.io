@@ -1,16 +1,10 @@
-# Legacy Obsidian to Zola Publishing Configuration
-#
-# Prefer the shared config files in the repository root:
-#   config.cfg -> Callisto.cfg
-#   config.cfg -> fw16-orig.cfg
-#
-# This file documents the older .publish-config fallback that publish.sh still
-# supports for backwards compatibility.
+# Obsidian to Zola Publishing Configuration
+# Copy this file to .publish-config and customize for your setup
 #
 # For flat vault structure (no subdirectories except attachments)
 
 # Path to your Obsidian vault
-VAULT_PATH="/path/to/vault"
+VAULT_PATH="$HOME/Documents/Obsidian/Notes"
 
 # Path to your Zola site (usually current directory)
 ZOLA_PATH="."
