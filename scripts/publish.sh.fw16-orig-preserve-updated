@@ -50,8 +50,6 @@ Options:
     --blog-only     Publish only blog posts (type: blog)
     --book-only     Publish only book chapters (type: book)
     --diff          Show rendered diffs and choose per file before publishing
-    --preserve-updated
-                    Keep existing updated timestamps when publishing changes
     --dry-run       Preview changes without copying files
     --build         Build the site after syncing
     --serve         Start development server after syncing
@@ -75,8 +73,6 @@ Examples:
     $0 --blog-only          # Publish only blog posts
     $0 --book-only          # Publish only book chapters
     $0 --diff               # Review each rendered diff before publishing
-    $0 --diff --preserve-updated
-                            # Publish cosmetic changes without updated timestamp churn
     $0 --dry-run            # Preview what would be published
     $0 --build              # Publish and build site
     $0 --serve              # Publish and start dev server
@@ -89,7 +85,6 @@ EOF
 TYPE_FILTER=()
 DRY_RUN=()
 DIFF_MODE=()
-PRESERVE_UPDATED=()
 DO_BUILD=false
 DO_SERVE=false
 
@@ -109,10 +104,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         --diff)
             DIFF_MODE=(--diff)
-            shift
-            ;;
-        --preserve-updated)
-            PRESERVE_UPDATED=(--preserve-updated)
             shift
             ;;
         --build)
@@ -138,7 +129,6 @@ CMD=(python3 "$SCRIPT_PATH" --vault "$VAULT_PATH" --zola "$ZOLA_PATH")
 CMD+=("${TYPE_FILTER[@]}")
 CMD+=("${DRY_RUN[@]}")
 CMD+=("${DIFF_MODE[@]}")
-CMD+=("${PRESERVE_UPDATED[@]}")
 
 # Execute the publish command
 echo -e "${GREEN}🚀 Publishing from Obsidian to Zola${NC}"

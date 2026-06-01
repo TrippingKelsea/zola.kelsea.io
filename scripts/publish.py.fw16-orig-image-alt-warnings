@@ -694,16 +694,13 @@ class ObsidianToZola:
 
             image.save(dest_image, format=save_format, **save_kwargs)
 
-    def published_image_markdown(self, image, alt_text, copy_assets, alt_was_inferred=False):
+    def published_image_markdown(self, image, alt_text, copy_assets):
         """Resolve, sanitize, and return Markdown for a publishable local image."""
         vault_image = self.resolve_attachment(image)
 
         if not vault_image:
             print(f"  ⚠️  Image not found: {image}")
             return None
-
-        if alt_was_inferred:
-            print(f"  ⚠️  Image alt text missing, using filename fallback: {image}")
 
         dest_name = self.hashed_image_name(vault_image)
         if copy_assets:
@@ -726,16 +723,11 @@ class ObsidianToZola:
             image_parts = [part.strip() for part in image_ref.split('|', 1)]
             image = image_parts[0]
             alt_text = Path(image).stem
-            alt_was_inferred = True
 
             if len(image_parts) == 2 and not image_parts[1].isdigit():
                 alt_text = image_parts[1]
-                alt_was_inferred = False
 
-            return (
-                self.published_image_markdown(image, alt_text, copy_assets, alt_was_inferred) or
-                match.group(0)
-            )
+            return self.published_image_markdown(image, alt_text, copy_assets) or match.group(0)
 
         def replace_markdown_image(match):
             alt_text = match.group(1)
@@ -744,15 +736,7 @@ class ObsidianToZola:
             if image.startswith(('http://', 'https://', 'mailto:', '#', '/', 'claude-citation:')):
                 return match.group(0)
 
-            return (
-                self.published_image_markdown(
-                    image,
-                    alt_text or Path(image).stem,
-                    copy_assets,
-                    alt_was_inferred=not bool(alt_text)
-                ) or
-                match.group(0)
-            )
+            return self.published_image_markdown(image, alt_text or Path(image).stem, copy_assets) or match.group(0)
 
         content = re.sub(wikilink_image_pattern, replace_wikilink_image, content)
         return re.sub(markdown_image_pattern, replace_markdown_image, content)

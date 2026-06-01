@@ -12,22 +12,15 @@ import sys
 import shutil
 import re
 import difflib
-import hashlib
 from pathlib import Path
 from datetime import datetime
 import argparse
-from urllib.parse import quote, unquote
+from urllib.parse import quote
 
 try:
     import tomllib
 except ImportError:
     tomllib = None
-
-try:
-    from PIL import Image, ImageOps
-except ImportError:
-    Image = None
-    ImageOps = None
 
 
 def load_config(config_path):
@@ -297,170 +290,7 @@ class ObsidianToZola:
             self.normalize_metadata_for_compare(existing_metadata)
         )
 
-    def top_level_keys(self, toml_content):
-        """Return top-level TOML keys before the first section."""
-        keys = set()
-        if not toml_content:
-            return keys
-
-        for raw_line in toml_content.splitlines():
-            line = raw_line.strip()
-            if line.startswith('['):
-                break
-            if not line or line.startswith('#') or '=' not in line:
-                continue
-
-            key, _ = line.split('=', 1)
-            keys.add(key.strip())
-
-        return keys
-
-    def unmanaged_top_level_blocks(self, existing_toml, rendered_toml):
-        """Return existing top-level metadata blocks not owned by the renderer."""
-        rendered_keys = self.top_level_keys(rendered_toml)
-        blocks = []
-        pending_comments = []
-
-        if not existing_toml:
-            return blocks
-
-        for raw_line in existing_toml.splitlines():
-            line = raw_line.strip()
-            if line.startswith('['):
-                break
-
-            if not line:
-                pending_comments = []
-                continue
-
-            if line.startswith('#'):
-                pending_comments.append(raw_line)
-                continue
-
-            if '=' not in line:
-                pending_comments = []
-                continue
-
-            key, _ = line.split('=', 1)
-            if key.strip() not in rendered_keys:
-                blocks.append(pending_comments + [raw_line])
-            pending_comments = []
-
-        return blocks
-
-    def insert_unmanaged_top_level_metadata(self, rendered_toml, unmanaged_blocks):
-        """Insert preserved top-level TOML blocks before the first section."""
-        if not unmanaged_blocks:
-            return rendered_toml
-
-        lines = rendered_toml.splitlines()
-        insert_index = len(lines)
-        for index, line in enumerate(lines):
-            if line.strip().startswith('['):
-                insert_index = index
-                break
-
-        preserved_lines = []
-        for block in unmanaged_blocks:
-            if preserved_lines:
-                preserved_lines.append('')
-            preserved_lines.extend(block)
-
-        insert_lines = preserved_lines
-        if insert_index > 0 and lines[insert_index - 1].strip():
-            insert_lines = [''] + insert_lines
-        if insert_index < len(lines) and lines[insert_index].strip():
-            insert_lines = insert_lines + ['']
-
-        merged_lines = lines[:insert_index] + insert_lines + lines[insert_index:]
-        return '\n'.join(merged_lines)
-
-    def preserve_unmanaged_metadata(self, dest_file, final_content):
-        """Keep destination metadata the publisher does not generate from the source."""
-        if not dest_file.exists():
-            return final_content
-
-        try:
-            with open(dest_file, 'r', encoding='utf-8') as f:
-                existing_toml, _ = self.split_toml_frontmatter(f.read())
-        except Exception as e:
-            print(f"  ⚠️  Error preserving existing metadata: {e}")
-            return final_content
-
-        rendered_toml, body = self.split_toml_frontmatter(final_content)
-        unmanaged_blocks = self.unmanaged_top_level_blocks(existing_toml, rendered_toml)
-        if not unmanaged_blocks:
-            return final_content
-
-        merged_toml = self.insert_unmanaged_top_level_metadata(rendered_toml, unmanaged_blocks)
-        return f'+++\n{merged_toml}\n+++\n\n{body}'
-
-    def get_rendered_title(self, frontmatter, content_type=None, filename=None):
-        """Return the title value that will be rendered into Zola frontmatter."""
-        if content_type == 'blog' and 'blog_title' in frontmatter:
-            return frontmatter['blog_title']
-        if 'title' in frontmatter:
-            return frontmatter['title']
-        if 'chapter_title' in frontmatter:
-            return frontmatter['chapter_title']
-        if filename:
-            return filename.replace('.md', '')
-        return 'Untitled'
-
-    def normalize_links_for_compare(self, line):
-        """Normalize equivalent markdown link targets for body comparison."""
-        broken_link_pattern = r'<!-- BROKEN LINK: \[([^\]]+)\]\(([^\)]+)\) -->'
-        link_pattern = r'(\[[^\]]+\]\()([^\)]+)(\))'
-
-        def normalize_broken_link(match):
-            return ''
-
-        def normalize_match(match):
-            link_text = match.group(1)[1:-2]
-            link_url = unquote(match.group(2))
-            if link_text == link_url:
-                return link_text
-            return f'{match.group(1)}{link_url}{match.group(3)}'
-
-        line = re.sub(broken_link_pattern, normalize_broken_link, line)
-        return re.sub(link_pattern, normalize_match, line)
-
-    def normalize_body_for_compare(self, body, frontmatter=None, content_type=None, filename=None):
-        """Normalize non-semantic formatting differences before comparing bodies."""
-        lines = []
-        in_code_fence = False
-
-        for raw_line in body.strip().splitlines():
-            line = raw_line.rstrip()
-
-            if line.lstrip().startswith('```'):
-                in_code_fence = not in_code_fence
-                lines.append(line)
-                continue
-
-            if not in_code_fence:
-                line = self.normalize_links_for_compare(line)
-                line = re.sub(r' {2,}', ' ', line)
-
-            lines.append(line)
-
-        if frontmatter is not None and content_type == 'blog':
-            title = self.get_rendered_title(frontmatter, content_type, filename)
-            if lines and lines[0].strip() == f'# {title}':
-                lines = lines[1:]
-                if lines and not lines[0].strip():
-                    lines = lines[1:]
-
-        return '\n'.join(lines)
-
-    def convert_yaml_to_toml_frontmatter(
-        self,
-        frontmatter,
-        existing_data=None,
-        filename=None,
-        content_type=None,
-        preserve_updated=False
-    ):
+    def convert_yaml_to_toml_frontmatter(self, frontmatter, existing_data=None, filename=None, content_type=None):
         """Convert frontmatter dict to TOML format"""
         from datetime import datetime
 
@@ -510,12 +340,8 @@ class ObsidianToZola:
 
         # Add updated field if this is an update to existing file
         if existing_data and 'date' in existing_data:
-            if preserve_updated:
-                if 'updated' in existing_data:
-                    main_fields['updated'] = existing_data['updated']
-            else:
-                # File exists, add updated timestamp
-                main_fields['updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # File exists, add updated timestamp
+            main_fields['updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         for key, value in frontmatter.items():
             # Skip internal fields
@@ -622,162 +448,50 @@ class ObsidianToZola:
         content = re.sub(r'\[\[([^\]|]+)\|([^\]]+)\]\]', r'[\2](\1)', content)
         return content
 
-    def resolve_attachment(self, image_ref):
-        """Resolve an attachment reference, including nested attachment folders."""
-        attachments_dir = self.vault_path / "attachments"
-        image_path = Path(unquote(image_ref))
-
-        if image_path.is_absolute():
-            candidates = [image_path]
-        else:
-            candidates = [
-                attachments_dir / image_path,
-                self.vault_path / image_path,
-            ]
-
-        for candidate in candidates:
-            if candidate and candidate.exists() and candidate.is_file():
-                return candidate
-
-        matches = sorted(
-            path for path in attachments_dir.rglob(image_path.name)
-            if path.is_file()
-        )
-
-        if len(matches) == 1:
-            return matches[0]
-
-        if len(matches) > 1:
-            print(f"  ⚠️  Multiple attachments named {image_path.name}; use a nested path in the embed")
-        return None
-
-    def hashed_image_name(self, image_path):
-        """Return a deterministic destination filename that is not source-derived."""
-        digest = hashlib.sha256()
-        with open(image_path, 'rb') as f:
-            for chunk in iter(lambda: f.read(1024 * 1024), b''):
-                digest.update(chunk)
-
-        suffix = image_path.suffix.lower() or '.img'
-        return f'obsidian-{digest.hexdigest()[:24]}{suffix}'
-
-    def copy_image_without_metadata(self, source_image, dest_image):
-        """Copy an image to the static directory while stripping raster metadata."""
-        raster_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.tif', '.tiff'}
-
-        if source_image.suffix.lower() not in raster_extensions:
-            shutil.copyfile(source_image, dest_image)
-            print(f"  ⚠️  Copied non-raster image without metadata stripping: {source_image.name}")
-            return
-
-        if Image is None:
-            shutil.copyfile(source_image, dest_image)
-            print("  ⚠️  Pillow is not available; copied image without stripping metadata")
-            return
-
-        with Image.open(source_image) as image:
-            save_format = image.format or source_image.suffix.lower().lstrip('.').upper()
-            image = ImageOps.exif_transpose(image)
-
-            if save_format == 'JPG':
-                save_format = 'JPEG'
-
-            save_kwargs = {}
-            if save_format == 'JPEG':
-                if image.mode not in ('RGB', 'L'):
-                    image = image.convert('RGB')
-                save_kwargs.update({'quality': 95, 'optimize': True})
-            elif save_format == 'PNG':
-                save_kwargs.update({'optimize': True})
-            elif save_format == 'WEBP':
-                save_kwargs.update({'quality': 95, 'method': 6})
-
-            image.save(dest_image, format=save_format, **save_kwargs)
-
-    def published_image_markdown(self, image, alt_text, copy_assets, alt_was_inferred=False):
-        """Resolve, sanitize, and return Markdown for a publishable local image."""
-        vault_image = self.resolve_attachment(image)
-
-        if not vault_image:
-            print(f"  ⚠️  Image not found: {image}")
-            return None
-
-        if alt_was_inferred:
-            print(f"  ⚠️  Image alt text missing, using filename fallback: {image}")
-
-        dest_name = self.hashed_image_name(vault_image)
-        if copy_assets:
-            static_images = self.zola_path / "static" / "images"
-            static_images.mkdir(parents=True, exist_ok=True)
-            self.copy_image_without_metadata(vault_image, static_images / dest_name)
-
-        image_url = quote(dest_name)
-        return f'![{alt_text}](/images/{image_url})'
-
     def process_images(self, content, source_file, copy_assets=True):
         """Handle Obsidian image embeds and copy images to static folder"""
         # Find all ![[image.png]] style embeds. Obsidian also supports
         # ![[image.png|Caption]] and ![[image.png|300]] variants.
-        wikilink_image_pattern = r'!\[\[([^\]]+)\]\]'
-        markdown_image_pattern = r'!\[([^\]]*)\]\(([^)]+)\)'
+        image_pattern = r'!\[\[([^\]]+)\]\]'
 
-        def replace_wikilink_image(match):
+        def replace_image(match):
             image_ref = match.group(1).strip()
             image_parts = [part.strip() for part in image_ref.split('|', 1)]
             image = image_parts[0]
-            alt_text = Path(image).stem
-            alt_was_inferred = True
+            caption = ''
 
             if len(image_parts) == 2 and not image_parts[1].isdigit():
-                alt_text = image_parts[1]
-                alt_was_inferred = False
+                caption = image_parts[1]
 
-            return (
-                self.published_image_markdown(image, alt_text, copy_assets, alt_was_inferred) or
-                match.group(0)
-            )
+            # Look for image in attachments folder
+            vault_image = self.vault_path / "attachments" / image
 
-        def replace_markdown_image(match):
-            alt_text = match.group(1)
-            image = match.group(2).strip()
+            if vault_image.exists():
+                if copy_assets:
+                    static_images = self.zola_path / "static" / "images"
+                    static_images.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(vault_image, static_images / image)
 
-            if image.startswith(('http://', 'https://', 'mailto:', '#', '/', 'claude-citation:')):
-                return match.group(0)
+                alt_text = caption or Path(image).stem
+                image_url = quote(image)
+                return f'![{alt_text}](/images/{image_url})'
 
-            return (
-                self.published_image_markdown(
-                    image,
-                    alt_text or Path(image).stem,
-                    copy_assets,
-                    alt_was_inferred=not bool(alt_text)
-                ) or
-                match.group(0)
-            )
+            print(f"  ⚠️  Image not found: {image}")
+            return match.group(0)
 
-        content = re.sub(wikilink_image_pattern, replace_wikilink_image, content)
-        return re.sub(markdown_image_pattern, replace_markdown_image, content)
+        return re.sub(image_pattern, replace_image, content)
 
-    def build_published_content(
-        self,
-        source_file,
-        frontmatter,
-        body,
-        existing_data=None,
-        content_type=None,
-        copy_assets=True,
-        preserve_updated=False
-    ):
+    def build_published_content(self, source_file, frontmatter, body, existing_data=None, content_type=None, copy_assets=True):
         """Convert an Obsidian source body into final Zola Markdown."""
-        body = self.process_images(body, source_file, copy_assets=copy_assets)
         body = self.process_wikilinks(body)
+        body = self.process_images(body, source_file, copy_assets=copy_assets)
         body = self.validate_and_process_links(body, source_file)
 
         toml_frontmatter = self.convert_yaml_to_toml_frontmatter(
             frontmatter,
             existing_data,
             source_file.name,
-            content_type,
-            preserve_updated
+            content_type
         )
 
         final_content = f'+++\n{toml_frontmatter}\n+++\n\n{body}'
@@ -837,13 +551,9 @@ class ObsidianToZola:
     def prompt_diff_action(self):
         """Prompt for an action after showing a file diff."""
         while True:
-            response = input(
-                "Publish this file? [y]es/[p]reserve-updated/[n]o/[a]ll/[q]uit: "
-            ).strip().lower()
+            response = input("Publish this file? [y]es/[n]o/[a]ll/[q]uit: ").strip().lower()
             if response in ('y', 'yes'):
                 return 'publish'
-            if response in ('p', 'preserve', 'preserve-updated'):
-                return 'preserve-updated'
             if response in ('n', 'no', 's', 'skip', ''):
                 return 'skip'
             if response in ('a', 'all'):
@@ -889,14 +599,7 @@ Book description goes here.
 
         print(f"  📚 Created book index: {index_file}")
 
-    def publish_file(
-        self,
-        source_file,
-        dry_run=False,
-        diff_mode=False,
-        assume_yes=False,
-        preserve_updated=False
-    ):
+    def publish_file(self, source_file, dry_run=False, diff_mode=False, assume_yes=False):
         """Publish a single file from Obsidian to Zola"""
         with open(source_file, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -935,16 +638,10 @@ Book description goes here.
             body,
             existing_data,
             content_type,
-            copy_assets=not dry_run and not diff_mode,
-            preserve_updated=preserve_updated
+            copy_assets=not dry_run and not diff_mode
         )
-        final_content = self.preserve_unmanaged_metadata(dest_file, final_content)
 
-        body_changed = (
-            existing_body is None or
-            self.normalize_body_for_compare(processed_body, frontmatter, content_type, source_file.name) !=
-            self.normalize_body_for_compare(existing_body, frontmatter, content_type, source_file.name)
-        )
+        body_changed = existing_body is None or processed_body.strip() != existing_body.strip()
         metadata_changed = self.metadata_changed(dest_file, final_content)
 
         # Check if content or metadata values changed
@@ -981,8 +678,6 @@ Book description goes here.
                     return 'quit'
                 if action == 'all':
                     assume_yes = True
-                if action == 'preserve-updated':
-                    preserve_updated = True
 
             # Copy assets only after the user accepts the diff.
             final_content, _ = self.build_published_content(
@@ -991,10 +686,8 @@ Book description goes here.
                 body,
                 existing_data,
                 content_type,
-                copy_assets=True,
-                preserve_updated=preserve_updated
+                copy_assets=True
             )
-            final_content = self.preserve_unmanaged_metadata(dest_file, final_content)
 
         if dry_run:
             if existing_data:
@@ -1019,14 +712,7 @@ Book description goes here.
             print(f"  ✓ Created: {dest_file}")
         return 'published-all' if assume_yes else 'published'
 
-    def scan_and_publish(
-        self,
-        dry_run=False,
-        content_type=None,
-        skip_confirmation=False,
-        diff_mode=False,
-        preserve_updated=False
-    ):
+    def scan_and_publish(self, dry_run=False, content_type=None, skip_confirmation=False, diff_mode=False):
         """Scan vault for markdown files and publish them"""
         if not self.vault_path.exists():
             print(f"❌ Vault not found: {self.vault_path}")
@@ -1112,13 +798,7 @@ Book description goes here.
 
         for md_file, frontmatter, file_type in files_to_publish:
             try:
-                result = self.publish_file(
-                    md_file,
-                    dry_run,
-                    diff_mode,
-                    assume_yes,
-                    preserve_updated
-                )
+                result = self.publish_file(md_file, dry_run, diff_mode, assume_yes)
                 if result in ('published', 'published-all', 'dry-run'):
                     published_count += 1
                 if result == 'published-all':
@@ -1181,9 +861,6 @@ Examples:
 
   # Walk through rendered diffs and choose what to publish
   %(prog)s --diff
-
-  # Publish cosmetic changes without changing the updated timestamp
-  %(prog)s --diff --preserve-updated
 
   # Override config.cfg for one run
   %(prog)s --vault /path/to/vault --dry-run
@@ -1271,12 +948,6 @@ Frontmatter Examples:
     )
 
     parser.add_argument(
-        '--preserve-updated',
-        action='store_true',
-        help='Keep the existing updated timestamp when publishing changes'
-    )
-
-    parser.add_argument(
         '--yes', '-y',
         action='store_true',
         help='Skip confirmation prompt and publish immediately'
@@ -1292,13 +963,7 @@ Frontmatter Examples:
         parser.error("VAULT_PATH is required. Set it in config.cfg or pass --vault.")
 
     publisher = ObsidianToZola(vault_path, zola_path)
-    publisher.scan_and_publish(
-        args.dry_run,
-        args.type,
-        args.yes,
-        args.diff,
-        args.preserve_updated
-    )
+    publisher.scan_and_publish(args.dry_run, args.type, args.yes, args.diff)
 
     print("\n✅ Publishing complete!")
 

@@ -560,12 +560,10 @@ body {
 
 .post-body img,
 .chapter-body img {
-    width: 80%;
     max-width: 100%;
     height: auto;
     border: 2px solid var(--secondary-fg);
-    margin: 20px auto;
-    display: block;
+    margin: 20px 0;
     box-shadow: 0 0 10px var(--glow-color);
     filter: var(--content-image-filter);
     cursor: zoom-in;
