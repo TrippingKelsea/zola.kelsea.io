@@ -13,7 +13,7 @@ slug = "til-agentic-workflows"
 
 
 Today I Learned: SRE Service Orchestration vs Agentic Workflows
-In today’s evolving tech landscape, two approaches stand out in managing automation and autonomy within complex systems: SRE service orchestration and agentic workflows. While both paradigms aim to optimize systems, they serve distinct purposes and operate at different levels of complexity and autonomy. Here’s a breakdown of what I learned while comparing these two.
+In today's evolving tech landscape, two approaches stand out in managing automation and autonomy within complex systems: SRE service orchestration and agentic workflows. While both paradigms aim to optimize systems, they serve distinct purposes and operate at different levels of complexity and autonomy. Here's a breakdown of what I learned while comparing these two.
 
 SRE Service Orchestration
 Site Reliability Engineering (SRE) emphasizes automating the management of infrastructure and services. At its core, service orchestration refers to coordinating and automating workflows across distributed systems. This is often achieved by using a combination of API-to-API interactions, scheduled tasks, and predefined logic. The orchestration platform acts as a conductor, ensuring that various services communicate and operate in sync to achieve an overall goal.

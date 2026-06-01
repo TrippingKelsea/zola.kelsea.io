@@ -21,7 +21,7 @@ content_warning = "This chapter contains explicit descriptions of child sexual a
 We had moved into this subdivision called Peacock Hills.  
 It wasn’t terribly far from the house we had just been living in, and it was quite a bit nicer.
 
-Next door to us were the Carvers—Rob and Tiffany.  
+Next door to us were the Carvers, Rob and Tiffany.  
 Tiffany had a kid from a previous marriage, **Kevin**.  
 She and Rob also had a child together.  
 Kevin was just a year or so younger than I was.  
@@ -121,7 +121,7 @@ Pulled my head up by my hair.
 
 *"Take your pants off and fuck me,"* she said.
 
-I didn’t need to be told twice.
+I didn’t need to be told twice. 
 
 I had barely entered her  
 when I experienced my own orgasm.
