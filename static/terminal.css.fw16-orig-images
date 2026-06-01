@@ -18,7 +18,6 @@
     --secondary-fg: #00ff00;      /* Ratio: 15.3:1 - PASS AAA */
     --dim-fg: #00cc00;            /* Ratio: 10.1:1 - PASS AAA */
     --glow-color: rgba(51, 255, 51, 0.4);
-    --content-image-filter: grayscale(1) sepia(1) hue-rotate(70deg) saturate(6) contrast(1.2) brightness(0.9);
 }
 
 /* Amber Terminal Theme */
@@ -28,7 +27,6 @@
     --secondary-fg: #ffaa00;      /* Ratio: 10.5:1 - PASS AAA */
     --dim-fg: #cc8800;            /* Ratio: 7.2:1 - PASS AAA */
     --glow-color: rgba(255, 204, 0, 0.4);
-    --content-image-filter: grayscale(1) sepia(1) hue-rotate(355deg) saturate(5) contrast(1.15) brightness(0.95);
 }
 
 /* Greyscale Terminal Theme */
@@ -38,7 +36,6 @@
     --secondary-fg: #cccccc;      /* Ratio: 11.1:1 - PASS AAA */
     --dim-fg: #999999;            /* Ratio: 7.0:1 - PASS AAA */
     --glow-color: rgba(224, 224, 224, 0.3);
-    --content-image-filter: grayscale(1) contrast(1.18) brightness(0.92);
 }
 
 * {
@@ -558,30 +555,12 @@ body {
     margin-bottom: 8px;
 }
 
-.post-body img,
-.chapter-body img {
+.post-body img {
     max-width: 100%;
     height: auto;
     border: 2px solid var(--secondary-fg);
     margin: 20px 0;
     box-shadow: 0 0 10px var(--glow-color);
-    filter: var(--content-image-filter);
-    cursor: zoom-in;
-    transition: filter 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.post-body img:hover,
-.post-body img:focus,
-.chapter-body img:hover,
-.chapter-body img:focus {
-    box-shadow: 0 0 18px var(--glow-color);
-    transform: translateY(-1px);
-}
-
-.post-body img:focus-visible,
-.chapter-body img:focus-visible {
-    outline: 2px solid var(--primary-fg);
-    outline-offset: 4px;
 }
 
 /* Post Navigation */
@@ -681,74 +660,6 @@ body {
     text-decoration: underline;
 }
 
-/* Content Images */
-.image-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background: rgba(0, 0, 0, 0.92);
-}
-
-.image-modal.is-open {
-    display: flex;
-}
-
-.image-modal__dialog {
-    width: min(100%, 1100px);
-    max-height: 92vh;
-    border: 2px solid var(--secondary-fg);
-    background: var(--primary-bg);
-    box-shadow: 0 0 25px var(--glow-color);
-    position: relative;
-    padding: 16px;
-}
-
-.image-modal__close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--primary-fg);
-    background: var(--primary-bg);
-    color: var(--primary-fg);
-    font-family: var(--font-mono);
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.image-modal__close:hover,
-.image-modal__close:focus {
-    color: var(--primary-bg);
-    background: var(--primary-fg);
-}
-
-.image-modal__image {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    max-height: calc(92vh - 96px);
-    margin: 24px auto 12px;
-    border: 1px solid var(--dim-fg);
-    filter: none;
-    box-shadow: none;
-}
-
-.image-modal__caption {
-    color: var(--dim-fg);
-    font-size: 14px;
-    text-align: center;
-}
-
-body.image-modal-open {
-    overflow: hidden;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .terminal-container {
@@ -776,19 +687,6 @@ body.image-modal-open {
     .post-metadata {
         flex-direction: column;
         gap: 5px;
-    }
-
-    .image-modal {
-        padding: 10px;
-    }
-
-    .image-modal__dialog {
-        padding: 12px;
-    }
-
-    .image-modal__image {
-        margin-top: 36px;
-        max-height: calc(92vh - 110px);
     }
 }
 

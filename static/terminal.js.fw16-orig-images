@@ -7,9 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize content warning reveal functionality
     initContentWarning();
 
-    // Initialize monochrome content images with full-color modal view
-    initContentImages();
-
     // Add typing effect to the home page
     const terminalOutput = document.querySelector('.terminal-output');
 
@@ -91,113 +88,6 @@ function announceContentRevealed() {
     }
 
     announcer.textContent = 'Content revealed. You may now read the chapter.';
-}
-
-// ==================================================================
-// CONTENT IMAGE MODAL
-// ==================================================================
-
-function initContentImages() {
-    const images = document.querySelectorAll('.post-body img, .chapter-body img');
-
-    images.forEach(image => {
-        image.setAttribute('tabindex', '0');
-        image.setAttribute('role', 'button');
-        image.setAttribute('aria-label', getImageLabel(image));
-        image.addEventListener('click', event => {
-            event.preventDefault();
-            openImageModal(image);
-        });
-        image.addEventListener('keydown', event => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openImageModal(image);
-            }
-        });
-    });
-}
-
-function getImageLabel(image) {
-    const alt = image.getAttribute('alt');
-    if (alt) {
-        return `View full-color image: ${alt}`;
-    }
-
-    return 'View full-color image';
-}
-
-function getImageModal() {
-    let modal = document.getElementById('image-modal');
-    if (modal) {
-        return modal;
-    }
-
-    modal = document.createElement('div');
-    modal.id = 'image-modal';
-    modal.className = 'image-modal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-label', 'Full-color image preview');
-    modal.innerHTML = `
-        <div class="image-modal__dialog" role="document">
-            <button type="button" class="image-modal__close" aria-label="Close image preview">×</button>
-            <img class="image-modal__image" alt="">
-            <div class="image-modal__caption"></div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    modal.addEventListener('click', event => {
-        if (event.target === modal) {
-            closeImageModal();
-        }
-    });
-
-    modal.querySelector('.image-modal__close').addEventListener('click', closeImageModal);
-
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && modal.classList.contains('is-open')) {
-            closeImageModal();
-        }
-    });
-
-    return modal;
-}
-
-let lastImageModalTrigger = null;
-
-function openImageModal(sourceImage) {
-    const modal = getImageModal();
-    const modalImage = modal.querySelector('.image-modal__image');
-    const caption = modal.querySelector('.image-modal__caption');
-    const closeButton = modal.querySelector('.image-modal__close');
-    const alt = sourceImage.getAttribute('alt') || '';
-
-    lastImageModalTrigger = sourceImage;
-    modalImage.src = sourceImage.currentSrc || sourceImage.src;
-    modalImage.alt = alt;
-    caption.textContent = alt;
-    caption.hidden = !alt;
-
-    modal.classList.add('is-open');
-    document.body.classList.add('image-modal-open');
-    closeButton.focus();
-}
-
-function closeImageModal() {
-    const modal = document.getElementById('image-modal');
-    if (!modal) {
-        return;
-    }
-
-    modal.classList.remove('is-open');
-    document.body.classList.remove('image-modal-open');
-
-    if (lastImageModalTrigger) {
-        lastImageModalTrigger.focus();
-        lastImageModalTrigger = null;
-    }
 }
 
 // ==================================================================

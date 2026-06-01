@@ -14,7 +14,6 @@ import re
 from pathlib import Path
 from datetime import datetime
 import argparse
-from urllib.parse import quote
 
 
 def load_config(config_path):
@@ -350,19 +349,11 @@ class ObsidianToZola:
 
     def process_images(self, content, source_file):
         """Handle Obsidian image embeds and copy images to static folder"""
-        # Find all ![[image.png]] style embeds. Obsidian also supports
-        # ![[image.png|Caption]] and ![[image.png|300]] variants.
+        # Find all ![[image.png]] style embeds
         image_pattern = r'!\[\[([^\]]+)\]\]'
+        images = re.findall(image_pattern, content)
 
-        def replace_image(match):
-            image_ref = match.group(1).strip()
-            image_parts = [part.strip() for part in image_ref.split('|', 1)]
-            image = image_parts[0]
-            caption = ''
-
-            if len(image_parts) == 2 and not image_parts[1].isdigit():
-                caption = image_parts[1]
-
+        for image in images:
             # Look for image in attachments folder
             vault_image = self.vault_path / "attachments" / image
 
@@ -371,14 +362,12 @@ class ObsidianToZola:
                 static_images.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(vault_image, static_images / image)
 
-                alt_text = caption or Path(image).stem
-                image_url = quote(image)
-                return f'![{alt_text}](/images/{image_url})'
+                # Replace Obsidian syntax with markdown
+                content = content.replace(f'![[{image}]]', f'![{image}](/images/{image})')
+            else:
+                print(f"  ⚠️  Image not found: {image}")
 
-            print(f"  ⚠️  Image not found: {image}")
-            return match.group(0)
-
-        return re.sub(image_pattern, replace_image, content)
+        return content
 
     def create_book_index(self, book_dir, book_slug, book_name, dry_run=False):
         """Create _index.md for a book directory if it doesn't exist"""
