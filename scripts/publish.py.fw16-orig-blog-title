@@ -189,7 +189,7 @@ class ObsidianToZola:
             print(f"  ⚠️  Error reading existing file: {e}")
             return None, None
 
-    def convert_yaml_to_toml_frontmatter(self, frontmatter, existing_data=None, filename=None, content_type=None):
+    def convert_yaml_to_toml_frontmatter(self, frontmatter, existing_data=None, filename=None):
         """Convert frontmatter dict to TOML format"""
         from datetime import datetime
 
@@ -200,11 +200,8 @@ class ObsidianToZola:
         taxonomy_fields = {}
         extra_fields = {}
 
-        # Ensure title exists. Blog notes use blog-title so the Obsidian note
-        # title can diverge from the public post title.
-        if content_type == 'blog' and 'blog_title' in frontmatter:
-            main_fields['title'] = frontmatter['blog_title']
-        elif 'title' not in frontmatter:
+        # Ensure title exists - use chapter_title, filename, or existing title
+        if 'title' not in frontmatter:
             if 'chapter_title' in frontmatter:
                 main_fields['title'] = frontmatter['chapter_title']
             elif filename:
@@ -254,9 +251,9 @@ class ObsidianToZola:
             elif key == 'tags' and 'tags' not in taxonomy_fields:
                 taxonomy_fields[key] = value
             # Book-specific fields go in extra section (created is kept, publish_date is skipped since it's used for date)
-            elif key in ('chapter_number', 'chapter_title', 'status', 'book', 'book_title', 'created', 'publish_date', 'blog_title'):
+            elif key in ('chapter_number', 'chapter_title', 'status', 'book', 'book_title', 'created', 'publish_date'):
                 # Skip publish_date as it's already used for the main date field
-                if key not in ('publish_date', 'blog_title'):
+                if key != 'publish_date':
                     extra_fields[key] = value
             # Standard fields stay in main section
             elif key in ('title', 'date', 'description', 'weight'):
@@ -461,12 +458,7 @@ Book description goes here.
                 print(f"  ✏️  Content changed, updating...")
 
         # Convert frontmatter to TOML (pass existing_data to preserve date, filename for title fallback)
-        toml_frontmatter = self.convert_yaml_to_toml_frontmatter(
-            frontmatter,
-            existing_data,
-            source_file.name,
-            content_type
-        )
+        toml_frontmatter = self.convert_yaml_to_toml_frontmatter(frontmatter, existing_data, source_file.name)
 
         # Combine into final content
         final_content = f'+++\n{toml_frontmatter}\n+++\n\n{body}'
@@ -633,7 +625,7 @@ Frontmatter Examples:
 
   Blog Post:
     ---
-    blog-title: "My Post"
+    title: "My Post"
     date: 2026-01-12
     tags: [tech, tutorial]
     publish: true
